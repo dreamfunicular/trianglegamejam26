@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://cldoa76oidokc"]
+
+[ext_resource type="Script" uid="uid://cyptminxds17s" path="res://playerCharacter.gd" id="1_sg0ef"]
+
+[node name="environmentTest" type="Node3D"]
+
+[node name="playerCharacter" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9755318, 0)
+script = ExtResource("1_sg0ef")
+
+[node name="terrain" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9755318, 0)
+skeleton = NodePath("../playerCharacter")
