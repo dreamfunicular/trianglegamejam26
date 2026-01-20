@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://d4m0cvsjdokv2"]
+
+[ext_resource type="PackedScene" uid="uid://soq3fq6874f5" path="res://Objects/Player/Player.tscn" id="1_fmpl0"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fmpl0"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_viqye"]
+sky_material = SubResource("ProceduralSkyMaterial_fmpl0")
+
+[sub_resource type="Environment" id="Environment_0r40m"]
+background_mode = 2
+sky = SubResource("Sky_viqye")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fmpl0"]
+albedo_color = Color(0.3254902, 0.28627452, 1, 1)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0r40m")
+
+[node name="Player" parent="." instance=ExtResource("1_fmpl0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21.929352, 0)
+
+[node name="Ground" type="CSGCombiner3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.9563904e-05, 0)
+material_override = SubResource("StandardMaterial3D_fmpl0")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5725098, -0.09553814, -1.8782959)
+size = Vector3(68.76123, 1, 71.44751)
