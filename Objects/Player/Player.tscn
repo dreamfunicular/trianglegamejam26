@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=3 uid="uid://soq3fq6874f5"]
+
+[ext_resource type="Script" uid="uid://biqy6yp0qk8r4" path="res://Objects/Player/player.gd" id="1_xhfnw"]
+[ext_resource type="PackedScene" uid="uid://bbs4qg2o8ouf0" path="res://Objects/Player/Gannet/GannetModel.tscn" id="2_oansn"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_0rwas"]
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_xhfnw")
+flightBlendPath = "parameters/Flight/blend_position"
+flappingBlendPath = "parameters/Flapping/blend_amount"
+
+[node name="PlayerCollision" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_0rwas")
+
+[node name="PitchPivot" type="Node3D" parent="."]
+
+[node name="Gannet2" parent="PitchPivot" instance=ExtResource("2_oansn")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+
+[node name="Placeholder" type="CSGCombiner3D" parent="PitchPivot"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)
+visible = false
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="PitchPivot/Placeholder"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="PitchPivot/Placeholder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0020384789, 0.03024292, 0.0017485619)
+size = Vector3(0.85302734, 0.04071045, 2.3759766)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="PitchPivot/Placeholder"]
+transform = Transform3D(0.87412846, 0.48569477, 0, -0.48569477, 0.87412846, 0, 0, 0, 1, -0.57196504, 0.15673226, 0.04960674)
+size = Vector3(1, 0.119140625, 0.65148926)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="PitchPivot/Placeholder"]
+transform = Transform3D(0.5720315, -0.54336494, 0.6144384, 0.3702479, 0.8394966, 0.3976958, -0.7319129, 0, 0.6813982, 0.40993732, -0.01954028, 0.007499419)
+size = Vector3(0.18157959, 0.1998291, 0.17633057)
+
+[node name="Camera3D" type="Camera3D" parent="PitchPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.96436375, 0.26458007, 0, -0.26458007, 0.96436375, 0, 1.32073, 2.3804674)
+current = true
