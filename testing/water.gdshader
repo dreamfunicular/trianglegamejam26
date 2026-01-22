@@ -1,5 +1,6 @@
 shader_type spatial;
 //render_mode specular_toon;
+render_mode world_vertex_coords;
 
 uniform float height_scale = 0.02;
 uniform sampler2D noiseA;
@@ -31,7 +32,10 @@ void vertex() {
 	float k = height(tex_position, TIME);
 	VERTEX.y += k * height_scale;
 
-	NORMAL = normalize(vec3(k - height(tex_position + vec2(0.1, 0.0), TIME), 0.1, k - height(tex_position + vec2(0.0, 0.1), TIME)));
+	// the one they gave me
+	NORMAL = normalize(vec3(k - height(tex_position + vec2(0.1, 0.0), TIME), 0.03, k - height(tex_position + vec2(0.0, 0.1), TIME)));
+
+	//float x_comp = vec2(k - height(tex_position + vec2(0.1, 0.0), TIME);
 }
 
 void fragment() {
@@ -42,4 +46,6 @@ void fragment() {
 	ROUGHNESS = 0.01 * (1.0 - fresnel);
 	ALBEDO = vec3(0.01, 0.01, 0.09) + (0.1 * fresnel);
 	ALPHA = 0.9;
+
+	//refract()
 }
