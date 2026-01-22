@@ -42,4 +42,3 @@ transform = Transform3D(1, 0, 0, 0, 0.96436375, 0.26458007, 0, -0.26458007, 0.96
 current = true
 
 [node name="UnderwaterEffect" parent="." instance=ExtResource("3_cac6a")]
-script = null
