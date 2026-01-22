@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://d4m0cvsjdokv2"]
+[gd_scene load_steps=8 format=3 uid="uid://d4m0cvsjdokv2"]
 
 [ext_resource type="PackedScene" uid="uid://soq3fq6874f5" path="res://Objects/Player/Player.tscn" id="1_fmpl0"]
 [ext_resource type="Texture2D" uid="uid://c5mp8fqgsh6r2" path="res://icon.svg" id="2_viqye"]
+[ext_resource type="PackedScene" uid="uid://dpmwr7b8lp1ce" path="res://testing/water_surface.tscn" id="3_boav5"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fmpl0"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -36,10 +37,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23.281277, 48.77247)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.7514725, 2.9563904e-05, 0)
 material_override = SubResource("StandardMaterial3D_fmpl0")
 use_collision = true
-
-[node name="CSGBox3D" type="CSGBox3D" parent="Ground"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.59964, -0.09553814, -65.53262)
-size = Vector3(267.44757, 1, 568.122)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -287.28146, 45.80746, -65.53262)
@@ -80,3 +77,6 @@ radius = 4.7563915
 [node name="CSGSphere3D8" type="CSGSphere3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.443924, 0.116912365, -31.549408)
 radius = 3.6457748
+
+[node name="WaterContainer" parent="Ground" instance=ExtResource("3_boav5")]
+transform = Transform3D(200, 0, 0, 0, 1, 0, 0, 0, 200, 0, 0, 0)

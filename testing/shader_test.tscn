@@ -1,8 +1,43 @@
 [gd_scene load_steps=5 format=3 uid="uid://uh0xuilt05lk"]
 
 [ext_resource type="Shader" uid="uid://cyvwflxi8xwnq" path="res://testing/underwater.gdshader" id="2_ilhii"]
-[ext_resource type="Script" uid="uid://d0wss6v5r63rq" path="res://testing/underwater_effect.gd" id="2_mabq3"]
 [ext_resource type="Texture2D" uid="uid://cw85yv4l0sjfe" path="res://testing/random.png" id="3_mabq3"]
+
+[sub_resource type="GDScript" id="GDScript_ilhii"]
+script/source = "extends CanvasLayer
+
+var in_water : bool = false
+
+func set_shader_value(param: String, value):
+	$UnderwaterEffect.get_child(0).material.set_shader_parameter(param, value);
+
+
+func enter_water():
+	in_water = true
+	
+	var tween = get_tree().create_tween()
+	tween.set_ease(tween.EASE_IN) # idk if this does anything
+	
+	tween.tween_method(func(value): set_shader_value(\"activate\", value), 0.0, 1.0, 0.1); # args are: (method to call / start value / end value / duration of animation)
+	
+	## TODO play any sound effect
+	
+	# do any sound adjustments
+
+func exit_water():
+	in_water = false
+	
+	var tween = get_tree().create_tween()
+	tween.set_ease(tween.EASE_IN)
+	tween.tween_method(func(value): set_shader_value(\"activate\", value), 1.0, 0.0, 0.1); # args are: (method to call / start value / end value / duration of animation)
+	
+	## TODO play any sound effect
+	
+	# do any sound adjustments
+	
+
+	
+"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mabq3"]
 shader = ExtResource("2_ilhii")
@@ -10,8 +45,8 @@ shader_parameter/activate = 0.999999977648
 shader_parameter/water_color = Color(0, 0, 0.39297795, 1)
 shader_parameter/color_intensity = 0.4
 shader_parameter/speed = 1.0
-shader_parameter/wave = 20.0
-shader_parameter/warp = 9.56999978981668
+shader_parameter/wave = 13.10000019520572
+shader_parameter/warp = 16.1099996436346
 
 [node name="ShaderTest" type="Node2D"]
 
@@ -21,7 +56,7 @@ scale = Vector2(1.6097046, 2.3)
 texture = ExtResource("3_mabq3")
 
 [node name="UnderwaterEffect2" type="CanvasLayer" parent="."]
-script = ExtResource("2_mabq3")
+script = SubResource("GDScript_ilhii")
 
 [node name="Shader" type="ColorRect" parent="UnderwaterEffect2"]
 material = SubResource("ShaderMaterial_mabq3")

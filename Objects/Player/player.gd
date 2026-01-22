@@ -22,6 +22,8 @@ var roll : float = 0.0
 @export var flightBlendPath: String
 @export var flappingBlendPath: String
 
+var in_water : bool = false
+
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	camera.position = Vector3(0, CAMERA_HEIGHT, CAMERA_DISTANCE)
@@ -56,4 +58,43 @@ func _physics_process(delta) -> void:
 	if Input.is_action_just_pressed("ui_accept"):
 		velocity = (-transform.basis.z + pitch_pivot.transform.basis.y).normalized() * 30.0
 	
+	
+	
+	if (position.y < 0 && not in_water):
+		enter_water()
+		
+	if (position.y > 0 && in_water):
+		exit_water()
+	
+	if in_water:
+		velocity.y = min(velocity.y + 1.5, 100)
+		
 	move_and_slide()
+
+
+func set_shader_value(param: String, value):
+	$UnderwaterEffect.get_child(0).material.set_shader_parameter(param, value);
+
+
+func enter_water():
+	in_water = true
+	
+	var tween = get_tree().create_tween()
+	tween.set_ease(tween.EASE_IN) # idk if this does anything
+	
+	tween.tween_method(func(value): set_shader_value("activate", value), 0.0, 1.0, 0.1); # args are: (method to call / start value / end value / duration of animation)
+	
+	## TODO play any sound effect
+	
+	# do any sound adjustments
+
+func exit_water():
+	in_water = false
+	
+	var tween = get_tree().create_tween()
+	tween.set_ease(tween.EASE_IN)
+	tween.tween_method(func(value): set_shader_value("activate", value), 1.0, 0.0, 0.1); # args are: (method to call / start value / end value / duration of animation)
+	
+	## TODO play any sound effect
+	
+	# do any sound adjustments

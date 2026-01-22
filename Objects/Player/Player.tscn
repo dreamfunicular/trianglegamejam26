@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://soq3fq6874f5"]
+[gd_scene load_steps=5 format=3 uid="uid://soq3fq6874f5"]
 
 [ext_resource type="Script" uid="uid://biqy6yp0qk8r4" path="res://Objects/Player/player.gd" id="1_xhfnw"]
 [ext_resource type="PackedScene" uid="uid://bbs4qg2o8ouf0" path="res://Objects/Player/Gannet/GannetModel.tscn" id="2_oansn"]
+[ext_resource type="PackedScene" uid="uid://dd68nbxyrey6x" path="res://testing/underwater_effect.tscn" id="3_cac6a"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_0rwas"]
 
@@ -39,3 +40,6 @@ size = Vector3(0.18157959, 0.1998291, 0.17633057)
 [node name="Camera3D" type="Camera3D" parent="PitchPivot"]
 transform = Transform3D(1, 0, 0, 0, 0.96436375, 0.26458007, 0, -0.26458007, 0.96436375, 0, 1.32073, 2.3804674)
 current = true
+
+[node name="UnderwaterEffect" parent="." instance=ExtResource("3_cac6a")]
+script = null
