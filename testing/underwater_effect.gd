@@ -30,7 +30,7 @@ func exit_water():
 	# do any sound adjustments
 	
 func _process(_delta) -> void:
-	if (Input.is_action_just_released("ui_accept")):
+	if (Input.is_action_just_released("ui_accept")): # this is super super temporary just for testing, this whole class can be something else
 		if not in_water:
 			enter_water()
 			
