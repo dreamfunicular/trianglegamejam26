@@ -23,6 +23,7 @@ var roll : float = 0.0
 @export var flappingBlendPath: String
 
 var bird_in_water : bool = false
+var is_bird_surfacing : bool = false
 var camera_in_water : bool = false
 
 func _ready():
@@ -55,7 +56,7 @@ func _physics_process(delta) -> void:
 	# updates all info about where the bird and the camera are
 	update_state()
 		
-	var wing_amount = clamp(1.2 - pitch_pivot.global_transform.basis.z.normalized().y * 1.4, 0.0, 1.0)
+	var wing_amount = clamp(1.2 - pitch_pivot.global_transform.basis.z.normalized().y * 1.4, 0.0, 1.0)  
 	model.get_anim_tree().set(flightBlendPath, wing_amount);
 	model.get_anim_tree().set(flappingBlendPath, 0)
 	
@@ -76,7 +77,7 @@ func _physics_process(delta) -> void:
 		
 		var divespeed_coefficient = 1
 		if (desired_dir.normalized().y > 0):
-			divespeed_coefficient = 1 + desired_dir.normalized().y * 0.7
+			divespeed_coefficient = 1 + desired_dir.normalized().y * 10
 		
 		velocity = velocity.lerp(desired_dir * velocity.length(), divespeed_coefficient * speed_weight * 0.1 * 60 * delta)
 		
@@ -91,13 +92,20 @@ func _physics_process(delta) -> void:
 		
 	# water bird
 	else: 
-		pass
-		var pitch = pitch_pivot.global_transform.basis.z.normalized().y # -1 is straight up, 1 is straight down
-		velocity.y += pow(-position.y, 1.4)/150 * (6-pow(pitch+2, 1.4))
-		clampf(velocity.y, 0, 50)
 		# this math is kinda temp still but i like the vibe of it.
 		# basically the longer you stay pointed down the longer you go
 		# tthink about it like variable height jump from mario
+		var pitch = pitch_pivot.global_transform.basis.z.normalized().y # -1 is straight up, 1 is straight down
+		if pitch < 0 or is_bird_surfacing: # facing up
+			# have a stronger force once the apex of the dive is reached
+			is_bird_surfacing = true
+			velocity.y += pow(-position.y, 1.6) / 100 + 0.5
+			#clampf(velocity.y, 0, 50)
+		
+		else:
+			velocity.y += pow(-position.y, 1.4) / 150 * (6-pow(pitch+2, 1.4))
+			#clampf(velocity.y, 0, 50)
+		
 		
 	move_and_slide()
 
@@ -108,6 +116,7 @@ func set_shader_value(param: String, value):
 
 func bird_enter_water():
 	bird_in_water = true
+	is_bird_surfacing = false
 
 func bird_exit_water():
 	bird_in_water = false
