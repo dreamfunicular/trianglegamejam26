@@ -9,8 +9,8 @@ shader_parameter/activate = 0.0
 shader_parameter/water_color = Color(0, 0, 0.39297795, 1)
 shader_parameter/color_intensity = 0.62999998591824
 shader_parameter/speed = 1.0
-shader_parameter/wave = 57.90000086277948
-shader_parameter/warp = 9.569999789816679
+shader_parameter/wave = 26.90000040084228
+shader_parameter/warp = 9.56999978981668
 
 [node name="UnderwaterEffect" type="CanvasLayer"]
 script = ExtResource("1_522x8")
