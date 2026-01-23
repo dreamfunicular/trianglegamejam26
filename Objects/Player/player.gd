@@ -19,12 +19,16 @@ const CAMERA_HEIGHT = 1.0
 
 var roll : float = 0.0
 
-@export var flightBlendPath: String
-@export var flappingBlendPath: String
+@export var flight_blend_path: String
+@export var air_state_playback_path: String
+const FLIGHT_STATE_NAME : String = "Flight"
+const FLAP_STATE_NAME : String = "Flap"
 
 var bird_in_water : bool = false
 var is_bird_surfacing : bool = false
 var camera_in_water : bool = false
+
+enum states {FLY, DIVE, FLOAT}
 
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -57,8 +61,7 @@ func _physics_process(delta) -> void:
 	update_state()
 		
 	var wing_amount = clamp(1.2 - pitch_pivot.global_transform.basis.z.normalized().y * 1.4, 0.0, 1.0)  
-	model.get_anim_tree().set(flightBlendPath, wing_amount);
-	model.get_anim_tree().set(flappingBlendPath, 0)
+	model.get_anim_tree().set(flight_blend_path, wing_amount);
 	
 	roll = clamp(lerp(roll, 0.0, 1.0 - exp(-ROLL_NORMALIZE_SPEED * delta)), -PI/4, PI/4)
 	model.rotation.z = -roll
@@ -87,7 +90,8 @@ func _physics_process(delta) -> void:
 		
 		if Input.is_action_just_pressed("ui_accept"):
 			velocity = (-transform.basis.z + pitch_pivot.transform.basis.y).normalized() * 30.0
-			
+			var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
+			playback.travel(FLAP_STATE_NAME)
 		
 		
 	# water bird

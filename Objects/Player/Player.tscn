@@ -8,8 +8,8 @@
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_xhfnw")
-flightBlendPath = "parameters/Flight/blend_position"
-flappingBlendPath = "parameters/Flapping/blend_amount"
+flight_blend_path = "parameters/StateMachine/Flight/blend_position"
+air_state_playback_path = "parameters/StateMachine/playback"
 
 [node name="PlayerCollision" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_0rwas")
