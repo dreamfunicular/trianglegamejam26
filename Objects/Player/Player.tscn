@@ -1,8 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://soq3fq6874f5"]
+[gd_scene load_steps=6 format=3 uid="uid://soq3fq6874f5"]
 
 [ext_resource type="Script" uid="uid://biqy6yp0qk8r4" path="res://Objects/Player/player.gd" id="1_xhfnw"]
 [ext_resource type="PackedScene" uid="uid://bbs4qg2o8ouf0" path="res://Objects/Player/Gannet/GannetModel.tscn" id="2_oansn"]
 [ext_resource type="PackedScene" uid="uid://dd68nbxyrey6x" path="res://testing/underwater_effect.tscn" id="3_cac6a"]
+
+[sub_resource type="Curve" id="Curve_cac6a"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.36956522, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_0rwas"]
 
@@ -10,6 +14,7 @@
 script = ExtResource("1_xhfnw")
 flight_blend_path = "parameters/StateMachine/Flight/blend_position"
 air_state_playback_path = "parameters/StateMachine/playback"
+flap_blend = SubResource("Curve_cac6a")
 
 [node name="PlayerCollision" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_0rwas")
