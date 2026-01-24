@@ -7,7 +7,10 @@ const CAMERA_ROLL_PERCENT = 0.5
 const ROLL_SENSE = 0.002
 const ROLL_NORMALIZE_SPEED = 4
 
-const MOUSE_SENSE = 0.003
+const MOUSE_SENSE_MAX = 0.004
+const MOUSE_SENSE_MIN = 0.002
+const TURN_CLAMP_MAX = PI/36
+const TURN_CLAMP_MIN = PI/72
 
 @onready var pitch_pivot = $PitchPivot
 @onready var camera = $PitchPivot/Camera3D
@@ -15,7 +18,7 @@ const MOUSE_SENSE = 0.003
 
 # Camera settings (COME BACK TO THESE FOR SPEED STUFF)
 const CAMERA_DISTANCE = 5.0
-const CAMERA_HEIGHT = 1.0
+const CAMERA_HEIGHT = 2.0
 
 var roll : float = 0.0
 
@@ -48,8 +51,10 @@ func _ready():
 
 func _input(event) -> void:
 	if event is InputEventMouseMotion:
-		rotate_y(-event.relative.x * MOUSE_SENSE)
-		pitch_pivot.rotate_x(-event.relative.y * MOUSE_SENSE)
+		var mouse_sense = lerp(MOUSE_SENSE_MAX, MOUSE_SENSE_MIN, get_speed_lerp())
+		var turn_clamp = lerp(TURN_CLAMP_MAX, TURN_CLAMP_MIN, get_speed_lerp())
+		rotate_y(clamp(-event.relative.x * mouse_sense, -turn_clamp, turn_clamp))
+		pitch_pivot.rotate_x(clamp(-event.relative.y * mouse_sense, -turn_clamp, turn_clamp))
 		roll += event.relative.x * ROLL_SENSE
 
 func update_cam():
@@ -71,7 +76,10 @@ func update_state():
 		PlayerStates.DIVE:
 			if position.y > 0:
 				state = PlayerStates.FLY
-	
+
+func get_speed_lerp() -> float:
+	if velocity.length() > 50: print("maxed out " + str(randi_range(0, 9)))
+	return min(1.0, velocity.length() / 50)
 
 func _physics_process(delta) -> void:
 	# updates all info about where the bird and the camera are
@@ -103,13 +111,13 @@ func _physics_process(delta) -> void:
 			var desired_dir = -pitch_pivot.global_transform.basis.z
 			
 			#var speed_weight = clamp(20.0 / max(velocity.length(), 1.0), 0.05, 1.0) * 0.9
-			var speed_weight = ease(min(velocity.length() / 20, 1.0), 0.3)
+			var speed_weight = ease(get_speed_lerp(), 0.3)
 			
 			var divespeed_coefficient = 1
 			if (desired_dir.normalized().y > 0):
 				divespeed_coefficient = 1 + desired_dir.normalized().y * 10
 			
-			velocity = velocity.lerp(desired_dir * velocity.length(), divespeed_coefficient * speed_weight * 0.1 * 60 * delta)
+			velocity = velocity.lerp(desired_dir * velocity.length(), divespeed_coefficient * speed_weight * 0.05 * 60 * delta)
 			
 			#var dot_weight = velocity.normalized().dot(desired_dir.normalized())
 			

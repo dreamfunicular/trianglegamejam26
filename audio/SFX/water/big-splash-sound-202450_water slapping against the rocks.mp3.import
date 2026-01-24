@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://3on1o5qpj3ce"
+path="res://.godot/imported/big-splash-sound-202450_water slapping against the rocks.mp3-6f4d4fc21014b4788e24ceb695669e4f.mp3str"
+
+[deps]
+
+source_file="res://audio/SFX/water/big-splash-sound-202450_water slapping against the rocks.mp3"
+dest_files=["res://.godot/imported/big-splash-sound-202450_water slapping against the rocks.mp3-6f4d4fc21014b4788e24ceb695669e4f.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
