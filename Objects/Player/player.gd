@@ -78,21 +78,30 @@ func update_state():
 				state = PlayerStates.FLY
 
 func get_speed_lerp() -> float:
-	if velocity.length() > 50: print("maxed out " + str(randi_range(0, 9)))
+	#if velocity.length() > 50: print("maxed out " + str(randi_range(0, 9)))
 	return min(1.0, velocity.length() / 50)
+
+func set_wing_amt(wing_amount: float) -> void:
+	model.get_anim_tree().set(flight_blend_path, wing_amount);
 
 func _physics_process(delta) -> void:
 	# updates all info about where the bird and the camera are
 	update_state()
 	update_cam()
-		
-	var wing_amount = clamp(1.2 - pitch_pivot.global_transform.basis.z.normalized().y * 1.4, 0.0, 1.0)  
-	model.get_anim_tree().set(flight_blend_path, wing_amount);
 	
+	var wing_amt_height = clamp(position.y/2.0, 0.0, 1.0)
+	var wing_amt_dive = clamp(1.2 - pitch_pivot.global_transform.basis.z.normalized().y * 1.4, 0.0, 1.0)
+	var wing_amt_speed = clamp(1 - (velocity.length() - 40)/50, 0.0, 1.0) * 0.7 + 0.3
+	set_wing_amt(wing_amt_height * wing_amt_dive * wing_amt_speed)
+	#
 	roll = clamp(lerp(roll, 0.0, 1.0 - exp(-ROLL_NORMALIZE_SPEED * delta)), -PI/4, PI/4)
 	model.rotation.z = -roll
 	rotation.z = -roll * CAMERA_ROLL_PERCENT
 	
+	if (flap_time > -FLAP_COOLDOWN):
+		flap_time -= delta
+		if (flap_time < -FLAP_COOLDOWN):
+			flap_time = -FLAP_COOLDOWN
 	
 	# flying bird only code
 	match state:
@@ -102,12 +111,7 @@ func _physics_process(delta) -> void:
 			if (flap_time > 0):
 				var percent_flap = flap_blend.sample(flap_time/FLAP_DUR)
 				velocity += percent_flap * (-transform.basis.z + pitch_pivot.transform.basis.y).normalized() * FLAP_POWER
-			if (flap_time > -FLAP_COOLDOWN):
-				flap_time -= delta
-				if (flap_time < -FLAP_COOLDOWN):
-					flap_time = -FLAP_COOLDOWN
 
-			
 			var desired_dir = -pitch_pivot.global_transform.basis.z
 			
 			#var speed_weight = clamp(20.0 / max(velocity.length(), 1.0), 0.05, 1.0) * 0.9
@@ -120,15 +124,11 @@ func _physics_process(delta) -> void:
 			velocity = velocity.lerp(desired_dir * velocity.length(), divespeed_coefficient * speed_weight * 0.05 * 60 * delta)
 			
 			#var dot_weight = velocity.normalized().dot(desired_dir.normalized())
-			
-			if Input.is_action_just_pressed("ui_accept"):
-				flap_time = FLAP_DUR
-				var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
-				playback.travel(FLAP_STATE_NAME)
-			
+			check_flap()
 			
 	# water bird
 		PlayerStates.DIVE: 
+			set_wing_amt(0.0)
 			# this math is kinda temp still but i like the vibe of it.
 			# basically the longer you stay pointed down the longer you go
 			# tthink about it like variable height jump from mario
@@ -145,6 +145,12 @@ func _physics_process(delta) -> void:
 		
 		
 	move_and_slide()
+
+func check_flap() -> void:
+	if Input.is_action_just_pressed("Flap"):
+		flap_time = FLAP_DUR
+		var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
+		playback.travel(FLAP_STATE_NAME)
 
 func set_shader_value(param: String, value):
 	$UnderwaterEffect.get_child(0).material.set_shader_parameter(param, value);
