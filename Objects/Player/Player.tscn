@@ -1,8 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://soq3fq6874f5"]
+[gd_scene load_steps=11 format=3 uid="uid://soq3fq6874f5"]
 
 [ext_resource type="Script" uid="uid://biqy6yp0qk8r4" path="res://Objects/Player/player.gd" id="1_xhfnw"]
 [ext_resource type="PackedScene" uid="uid://bbs4qg2o8ouf0" path="res://Objects/Player/Gannet/GannetModel.tscn" id="2_oansn"]
 [ext_resource type="PackedScene" uid="uid://dd68nbxyrey6x" path="res://testing/underwater_effect.tscn" id="3_cac6a"]
+[ext_resource type="AudioStream" uid="uid://ccl872p5pftmv" path="res://audio/SFX/wing_flapping/big-flap--01.ogg" id="4_y01d7"]
+[ext_resource type="AudioStream" uid="uid://dtpwp8202ba3d" path="res://audio/SFX/wing_flapping/big-flap--02.ogg" id="5_7t0p5"]
+[ext_resource type="AudioStream" uid="uid://ba8cqx4iwfxlt" path="res://audio/SFX/wing_flapping/big-flap--03.ogg" id="6_ebgc0"]
+[ext_resource type="AudioStream" uid="uid://r2e64jb810hj" path="res://audio/SFX/wing_flapping/big-flap--04.ogg" id="7_1ggq4"]
+[ext_resource type="AudioStream" uid="uid://elw4fe3ltwiq" path="res://audio/SFX/wing_flapping/big-flap--05.ogg" id="8_q10m3"]
 
 [sub_resource type="Curve" id="Curve_cac6a"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.24456522, 1), 0.0, 0.0, 0, 0, Vector2(0.41847825, 0.22471917), -1.698235, -1.698235, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -47,3 +52,20 @@ transform = Transform3D(1, 0, 0, 0, 0.96436375, 0.26458007, 0, -0.26458007, 0.96
 current = true
 
 [node name="UnderwaterEffect" parent="." instance=ExtResource("3_cac6a")]
+
+[node name="BirdSounds" type="Node3D" parent="."]
+
+[node name="Flap1" type="AudioStreamPlayer3D" parent="BirdSounds"]
+stream = ExtResource("4_y01d7")
+
+[node name="Flap2" type="AudioStreamPlayer3D" parent="BirdSounds"]
+stream = ExtResource("5_7t0p5")
+
+[node name="Flap3" type="AudioStreamPlayer3D" parent="BirdSounds"]
+stream = ExtResource("6_ebgc0")
+
+[node name="Flap4" type="AudioStreamPlayer3D" parent="BirdSounds"]
+stream = ExtResource("7_1ggq4")
+
+[node name="Flap5" type="AudioStreamPlayer3D" parent="BirdSounds"]
+stream = ExtResource("8_q10m3")

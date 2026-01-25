@@ -158,6 +158,10 @@ func check_flap() -> void:
 		flap_time = FLAP_DUR
 		var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
 		playback.travel(FLAP_STATE_NAME)
+		
+		# and play a sound
+		var num = randi_range(0, 4) 
+		$BirdSounds.get_child(num).play()
 
 func set_shader_value(param: String, value):
 	$UnderwaterEffect.get_child(0).material.set_shader_parameter(param, value);

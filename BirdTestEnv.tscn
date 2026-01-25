@@ -4,16 +4,22 @@
 [ext_resource type="Texture2D" uid="uid://c5mp8fqgsh6r2" path="res://icon.svg" id="2_viqye"]
 [ext_resource type="PackedScene" uid="uid://dpmwr7b8lp1ce" path="res://testing/water_surface.tscn" id="3_boav5"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fmpl0"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0r40m"]
+sky_top_color = Color(0.3372549, 0.45490196, 1, 1)
+sky_horizon_color = Color(0.4482649, 0.66382855, 0.89558715, 1)
+sky_curve = 0.083217986
+ground_bottom_color = Color(0.2, 0.23529412, 0.3764706, 1)
+ground_horizon_color = Color(0.44705883, 0.6627451, 0.89411765, 1)
+ground_curve = 17.221617
 
-[sub_resource type="Sky" id="Sky_viqye"]
-sky_material = SubResource("ProceduralSkyMaterial_fmpl0")
+[sub_resource type="Sky" id="Sky_boav5"]
+sky_material = SubResource("ProceduralSkyMaterial_0r40m")
 
 [sub_resource type="Environment" id="Environment_0r40m"]
 background_mode = 2
-sky = SubResource("Sky_viqye")
+background_color = Color(0.86678934, 0.7117472, 0.8747147, 1)
+sky = SubResource("Sky_boav5")
+ambient_light_color = Color(0.52294946, 0.44319847, 0.38733825, 1)
 tonemap_mode = 2
 glow_enabled = true
 
