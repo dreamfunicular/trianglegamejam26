@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://d4m0cvsjdokv2"]
+[gd_scene load_steps=9 format=3 uid="uid://d4m0cvsjdokv2"]
 
+[ext_resource type="PackedScene" uid="uid://eawuk4olyybv" path="res://Environment/WaterDust.tscn" id="1_boav5"]
 [ext_resource type="PackedScene" uid="uid://soq3fq6874f5" path="res://Objects/Player/Player.tscn" id="1_fmpl0"]
 [ext_resource type="Texture2D" uid="uid://c5mp8fqgsh6r2" path="res://icon.svg" id="2_viqye"]
 [ext_resource type="PackedScene" uid="uid://dpmwr7b8lp1ce" path="res://testing/water_surface.tscn" id="3_boav5"]
@@ -28,6 +29,9 @@ albedo_color = Color(0.3254902, 0.28627452, 1, 1)
 albedo_texture = ExtResource("2_viqye")
 
 [node name="Node3D" type="Node3D"]
+
+[node name="WaterDust" parent="." instance=ExtResource("1_boav5")]
+amount = 265
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.12975238, 0.3116533, -0.94129515, 0.113793835, 0.93836766, 0.32636994, 0.9849951, -0.1494608, 0.08629121, -0.3389082, 0, 0.12492108)
