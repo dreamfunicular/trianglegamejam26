@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dsql2jbe3cx8l"
+path="res://.godot/imported/water-splash-290839.mp3-7cf5fcee92f9add7ee5095cc24463f28.mp3str"
+
+[deps]
+
+source_file="res://audio/SFX/water/other water/water-splash-290839.mp3"
+dest_files=["res://.godot/imported/water-splash-290839.mp3-7cf5fcee92f9add7ee5095cc24463f28.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

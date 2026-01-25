@@ -55,17 +55,19 @@ current = true
 
 [node name="BirdSounds" type="Node3D" parent="."]
 
-[node name="Flap1" type="AudioStreamPlayer3D" parent="BirdSounds"]
+[node name="Flap" type="Node3D" parent="BirdSounds"]
+
+[node name="Flap1" type="AudioStreamPlayer3D" parent="BirdSounds/Flap"]
 stream = ExtResource("4_y01d7")
 
-[node name="Flap2" type="AudioStreamPlayer3D" parent="BirdSounds"]
+[node name="Flap2" type="AudioStreamPlayer3D" parent="BirdSounds/Flap"]
 stream = ExtResource("5_7t0p5")
 
-[node name="Flap3" type="AudioStreamPlayer3D" parent="BirdSounds"]
+[node name="Flap3" type="AudioStreamPlayer3D" parent="BirdSounds/Flap"]
 stream = ExtResource("6_ebgc0")
 
-[node name="Flap4" type="AudioStreamPlayer3D" parent="BirdSounds"]
+[node name="Flap4" type="AudioStreamPlayer3D" parent="BirdSounds/Flap"]
 stream = ExtResource("7_1ggq4")
 
-[node name="Flap5" type="AudioStreamPlayer3D" parent="BirdSounds"]
+[node name="Flap5" type="AudioStreamPlayer3D" parent="BirdSounds/Flap"]
 stream = ExtResource("8_q10m3")
