@@ -4,13 +4,15 @@ const GRAV = -15.0
 
 const CAMERA_ROLL_PERCENT = 0.5
 
-const ROLL_SENSE = 0.002
+const ROLL_SENSE = 0.8
 const ROLL_NORMALIZE_SPEED = 4
 
-const MOUSE_SENSE_MAX = 0.004
-const MOUSE_SENSE_MIN = 0.002
-const TURN_CLAMP_MAX = PI/36
-const TURN_CLAMP_MIN = PI/72
+const MOUSE_SENSE_FREE = Vector2(0.002, 0.004)
+const TURN_CLAMP_FREE = Vector2(PI/72, PI/36)
+const MOUSE_SENSE_WATER = Vector2(0.001, 0.001)
+const TURN_CLAMP_WATER = Vector2(PI/108, PI/108)
+var mouse_sense_vect = MOUSE_SENSE_FREE
+var turn_clamp_vect = TURN_CLAMP_FREE
 
 @onready var pitch_pivot = $PitchPivot
 @onready var camera = $PitchPivot/Camera3D
@@ -29,6 +31,7 @@ const FLAP_STATE_NAME : String = "Flap"
 
 var is_bird_surfacing : bool = false
 var camera_in_water : bool = false
+var entry_speed : float = 0.0
 
 enum PlayerStates {
 	FLY,
@@ -53,11 +56,37 @@ func _ready():
 
 func _input(event) -> void:
 	if event is InputEventMouseMotion:
-		var mouse_sense = lerp(MOUSE_SENSE_MAX, MOUSE_SENSE_MIN, get_speed_lerp())
-		var turn_clamp = lerp(TURN_CLAMP_MAX, TURN_CLAMP_MIN, get_speed_lerp())
-		rotate_y(clamp(-event.relative.x * mouse_sense, -turn_clamp, turn_clamp))
-		pitch_pivot.rotate_x(clamp(-event.relative.y * mouse_sense, -turn_clamp, turn_clamp))
-		roll += event.relative.x * ROLL_SENSE
+		var weight = update_steer()
+		var mouse_sense = lerp(mouse_sense_vect.y, mouse_sense_vect.x, weight)
+		var turn_clamp = lerp(turn_clamp_vect.y, turn_clamp_vect.x, weight)
+		#rotate_y(clamp(-event.relative.x * mouse_sense, -turn_clamp, turn_clamp))
+		#pitch_pivot.rotate_x(clamp(-event.relative.y * mouse_sense, -turn_clamp, turn_clamp))
+		#roll += event.relative.x * ROLL_SENSE
+		turn_camera(clamp(-event.relative.x * mouse_sense, -turn_clamp, turn_clamp),
+			clamp(-event.relative.y * mouse_sense, -turn_clamp, turn_clamp))
+
+func turn_camera(rad_x: float, rad_y: float):
+	rotate_y(rad_x)
+	pitch_pivot.rotate_x(rad_y)
+	roll += -rad_x * ROLL_SENSE
+
+# the vectors it sets store the high and low values of mouse sense and max steer
+# these values are set based on the player's state
+# then based on whatever blending function is used to lerp between them, return that weight
+# this function is only to be used in the _input function
+func update_steer() -> float:
+	match state:
+		PlayerStates.FLY:
+			mouse_sense_vect = MOUSE_SENSE_FREE
+			turn_clamp_vect = TURN_CLAMP_FREE
+			return get_speed_lerp()
+			
+		PlayerStates.DIVE:
+			mouse_sense_vect = MOUSE_SENSE_WATER
+			turn_clamp_vect = TURN_CLAMP_WATER
+			return 0.000
+	
+	return 0.0
 
 func update_cam():
 	if (camera.global_position.y < 0 && not camera_in_water):
@@ -72,7 +101,7 @@ func update_state():
 			if position.y < 0:
 				state = PlayerStates.DIVE
 				is_bird_surfacing = false
-				
+				entry_speed = velocity.length() * 0.9
 				
 				var _new_spash = splash_scene.instantiate()
 				add_sibling(_new_spash)
@@ -119,7 +148,7 @@ func _physics_process(delta) -> void:
 				var percent_flap = flap_blend.sample(1 - flap_time/FLAP_DUR)
 				velocity += percent_flap * (-transform.basis.z + pitch_pivot.transform.basis.y).normalized() * FLAP_POWER
 
-			var desired_dir = -pitch_pivot.global_transform.basis.z
+			#var desired_dir = -pitch_pivot.global_transform.basis.z
 			
 			#var speed_weight = clamp(20.0 / max(velocity.length(), 1.0), 0.05, 1.0) * 0.9
 			var speed_weight = ease(get_speed_lerp(), 0.3)
@@ -131,8 +160,9 @@ func _physics_process(delta) -> void:
 			#velocity = velocity.lerp(desired_dir * velocity.length(), divespeed_coefficient * speed_weight * 0.05 * 60 * delta)
 			#velocity = velocity.slerp(desired_dir * velocity.length(), divespeed_coefficient * speed_weight * 0.05 * 60 * delta)
 			
-			velocity = velocity.lerp(Vector3.ZERO, speed_weight * 0.001 * 60 * delta)
-			velocity = velocity.slerp(desired_dir * velocity.length(), 1.0 * 0.05 * 60 * delta)
+			#velocity = velocity.lerp(Vector3.ZERO, speed_weight * 0.001 * 60 * delta)
+			#velocity = velocity.slerp(desired_dir * velocity.length(), 1.0 * 0.05 * 60 * delta)
+			steer_and_fric(0.05 * 60 * delta, speed_weight * 0.001 * 60 * delta)
 			
 			#var dot_weight = velocity.normalized().dot(desired_dir.normalized())
 			check_flap()
@@ -145,24 +175,41 @@ func _physics_process(delta) -> void:
 			# Copy air code, high degree of friction
 			# ... (vel * 0.9 or smth every frame modified by delta)
 			# When facing up or dropping below a speed or above a certain timer, go back up
-			# Have a max speed otw back up
+			# Have a max speed otw back up ---- clamp to entry speed * 0.9 or smth !!!!
 			
 			# this math is kinda temp still but i like the vibe of it.
 			# basically the longer you stay pointed down the longer you go
 			# tthink about it like variable height jump from mario
+			
 			var pitch = pitch_pivot.global_transform.basis.z.normalized().y # -1 is straight up, 1 is straight down
-			if pitch < 0 or is_bird_surfacing: # facing up
+			if pitch < -0.1 or velocity.length() < 10.0 or is_bird_surfacing or velocity.y > 0: # facing up
 				# have a stronger force once the apex of the dive is reached
 				is_bird_surfacing = true
-				velocity.y += pow(-position.y, 1.6) / 100 + 0.5
+				velocity.y += pow(-position.y, 1.6) / 150 + 0.5
+				if (velocity.length() > entry_speed): velocity = velocity.lerp(entry_speed * velocity.normalized(), delta * 60 * 0.5)
+				#velocity.y += 20 * delta
 				#clampf(velocity.y, 0, 50)
+				#turn_camera(0.0, (pitch.angle_to(Vector3.UP) ** 2) * 0.15 * delta)
+				#turn_camera(desired_dir.cross(Vector3.UP).dot(velocity) * delta, (desired_dir.y - velocity.normalized().y) * delta)
 			
 			else:
-				velocity.y += pow(-position.y, 1.4) / 150 * (6-pow(pitch+2, 1.4))
+				velocity.y += pow(-position.y, 1.4) / 150 #* (6-pow(pitch+2, 1.4))
+				#velocity.y += 10 * delta
 				#clampf(velocity.y, 0, 50)
+				#turn_camera(0.0, (pitch.angle_to(Vector3.UP) ** 2) * 0.1 * delta)
+				#turn_camera(0.0, (1.0 - pitch) * 0.15 * delta)
+			
+			turn_camera(0.0, (1.0 - pitch) * clamp((-position.y) / 70, 0.5, 1.0) * 0.5 * (0.6 + 0.4 * int(is_bird_surfacing)) * delta)
+			steer_and_fric(0.01 * 60 * delta, 0.003 * 60 * delta)
 		
 		
 	move_and_slide()
+
+func steer_and_fric(steer_weight: float, fric_weight: float):
+	var desired_dir = -pitch_pivot.global_transform.basis.z
+	
+	velocity = velocity.lerp(Vector3.ZERO, fric_weight)
+	velocity = velocity.slerp(desired_dir * velocity.length(), steer_weight)
 
 func check_flap() -> void:
 	if Input.is_action_just_pressed("Flap"):
