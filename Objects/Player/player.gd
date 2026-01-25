@@ -43,6 +43,8 @@ const FLAP_DUR = 1.75
 const FLAP_COOLDOWN = 0.5
 var flap_time = -FLAP_COOLDOWN
 
+var splash_scene = preload("res://Environment/SplashInstance.tscn")
+
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	camera.position = Vector3(0, CAMERA_HEIGHT, CAMERA_DISTANCE)
@@ -70,6 +72,11 @@ func update_state():
 			if position.y < 0:
 				state = PlayerStates.DIVE
 				is_bird_surfacing = false
+				
+				
+				var _new_spash = splash_scene.instantiate()
+				add_sibling(_new_spash)
+				
 				## TODO: Add Sound Effect
 				## TODO: Add Particles
 		
@@ -161,7 +168,7 @@ func check_flap() -> void:
 		
 		# and play a sound
 		var num = randi_range(0, 4) 
-		$BirdSounds.get_child(num).play()
+		$BirdSounds/Flap.get_child(num).play()
 
 func set_shader_value(param: String, value):
 	$UnderwaterEffect.get_child(0).material.set_shader_parameter(param, value);

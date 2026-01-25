@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://db5fw2eqqf1qi"
+path="res://.godot/imported/water-splash-352472_ squirty.mp3-dc2feb88310b8d986a366daaf0b010c0.mp3str"
+
+[deps]
+
+source_file="res://audio/SFX/water/other water/water-splash-352472_ squirty.mp3"
+dest_files=["res://.godot/imported/water-splash-352472_ squirty.mp3-dc2feb88310b8d986a366daaf0b010c0.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

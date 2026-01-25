@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bfiecquqiybr0"
+path="res://.godot/imported/water-splash-5860.mp3-2f4f65fd4c1762c54b51e6af4381e605.mp3str"
+
+[deps]
+
+source_file="res://audio/SFX/water/other water/water-splash-5860.mp3"
+dest_files=["res://.godot/imported/water-splash-5860.mp3-2f4f65fd4c1762c54b51e6af4381e605.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dmogbqvdf8s0m"
+path="res://.godot/imported/big-rock-splash-467479.mp3-14c21f610010021e1fe5c37ca23571d2.mp3str"
+
+[deps]
+
+source_file="res://audio/SFX/water/other water/big-rock-splash-467479.mp3"
+dest_files=["res://.godot/imported/big-rock-splash-467479.mp3-14c21f610010021e1fe5c37ca23571d2.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

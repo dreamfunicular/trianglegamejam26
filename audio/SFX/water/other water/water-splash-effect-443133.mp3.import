@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://duwu6hqabhj1h"
+path="res://.godot/imported/water-splash-effect-443133.mp3-7be52dcc847d8748db25e634cc15bb69.mp3str"
+
+[deps]
+
+source_file="res://audio/SFX/water/other water/water-splash-effect-443133.mp3"
+dest_files=["res://.godot/imported/water-splash-effect-443133.mp3-7be52dcc847d8748db25e634cc15bb69.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

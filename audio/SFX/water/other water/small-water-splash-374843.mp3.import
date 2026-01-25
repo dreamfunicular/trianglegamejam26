@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://d0rgkt7ixir3e"
+path="res://.godot/imported/small-water-splash-374843.mp3-9e680529f7ac9390413ce3798f2082cb.mp3str"
+
+[deps]
+
+source_file="res://audio/SFX/water/other water/small-water-splash-374843.mp3"
+dest_files=["res://.godot/imported/small-water-splash-374843.mp3-9e680529f7ac9390413ce3798f2082cb.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
