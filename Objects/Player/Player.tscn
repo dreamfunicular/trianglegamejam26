@@ -5,8 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://dd68nbxyrey6x" path="res://testing/underwater_effect.tscn" id="3_cac6a"]
 
 [sub_resource type="Curve" id="Curve_cac6a"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.36956522, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 3
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.24456522, 1), 0.0, 0.0, 0, 0, Vector2(0.41847825, 0.22471917), -1.698235, -1.698235, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_0rwas"]
 

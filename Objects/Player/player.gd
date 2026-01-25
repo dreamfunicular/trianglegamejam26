@@ -38,7 +38,7 @@ enum PlayerStates {
 var state: PlayerStates = PlayerStates.FLY
 
 @export var flap_blend: Curve
-const FLAP_POWER = 0.5
+const FLAP_POWER = 1.5
 const FLAP_DUR = 1.75
 const FLAP_COOLDOWN = 0.5
 var flap_time = -FLAP_COOLDOWN
@@ -91,7 +91,7 @@ func _physics_process(delta) -> void:
 	
 	var wing_amt_height = clamp(position.y/2.0, 0.0, 1.0)
 	var wing_amt_dive = clamp(1.2 - pitch_pivot.global_transform.basis.z.normalized().y * 1.4, 0.0, 1.0)
-	var wing_amt_speed = clamp(1 - (velocity.length() - 40)/50, 0.0, 1.0) * 0.7 + 0.3
+	var wing_amt_speed = clamp(1 - (velocity.length() - 40)/50, 0.0, 1.0) * 0.3 + 0.7
 	set_wing_amt(wing_amt_height * wing_amt_dive * wing_amt_speed)
 	#
 	roll = clamp(lerp(roll, 0.0, 1.0 - exp(-ROLL_NORMALIZE_SPEED * delta)), -PI/4, PI/4)
@@ -109,7 +109,7 @@ func _physics_process(delta) -> void:
 			velocity.y += GRAV * delta
 			
 			if (flap_time > 0):
-				var percent_flap = flap_blend.sample(flap_time/FLAP_DUR)
+				var percent_flap = flap_blend.sample(1 - flap_time/FLAP_DUR)
 				velocity += percent_flap * (-transform.basis.z + pitch_pivot.transform.basis.y).normalized() * FLAP_POWER
 
 			var desired_dir = -pitch_pivot.global_transform.basis.z
@@ -127,8 +127,15 @@ func _physics_process(delta) -> void:
 			check_flap()
 			
 	# water bird
-		PlayerStates.DIVE: 
+		PlayerStates.DIVE:
 			set_wing_amt(0.0)
+			
+			# Thoughts:
+			# Copy air code, high degree of friction
+			# ... (vel * 0.9 or smth every frame modified by delta)
+			# When facing up or dropping below a speed or above a certain timer, go back up
+			# Have a max speed otw back up
+			
 			# this math is kinda temp still but i like the vibe of it.
 			# basically the longer you stay pointed down the longer you go
 			# tthink about it like variable height jump from mario
