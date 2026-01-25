@@ -124,11 +124,15 @@ func _physics_process(delta) -> void:
 			#var speed_weight = clamp(20.0 / max(velocity.length(), 1.0), 0.05, 1.0) * 0.9
 			var speed_weight = ease(get_speed_lerp(), 0.3)
 			
-			var divespeed_coefficient = 1
-			if (desired_dir.normalized().y > 0):
-				divespeed_coefficient = 1 + desired_dir.normalized().y * 10
+			#var divespeed_coefficient = 1
+			#if (desired_dir.normalized().y > 0):
+				#divespeed_coefficient = 1 + desired_dir.normalized().y * 10
 			
-			velocity = velocity.lerp(desired_dir * velocity.length(), divespeed_coefficient * speed_weight * 0.05 * 60 * delta)
+			#velocity = velocity.lerp(desired_dir * velocity.length(), divespeed_coefficient * speed_weight * 0.05 * 60 * delta)
+			#velocity = velocity.slerp(desired_dir * velocity.length(), divespeed_coefficient * speed_weight * 0.05 * 60 * delta)
+			
+			velocity = velocity.lerp(Vector3.ZERO, speed_weight * 0.001 * 60 * delta)
+			velocity = velocity.slerp(desired_dir * velocity.length(), 1.0 * 0.05 * 60 * delta)
 			
 			#var dot_weight = velocity.normalized().dot(desired_dir.normalized())
 			check_flap()
