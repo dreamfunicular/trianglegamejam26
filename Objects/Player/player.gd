@@ -212,7 +212,7 @@ func steer_and_fric(steer_weight: float, fric_weight: float):
 	velocity = velocity.slerp(desired_dir * velocity.length(), steer_weight)
 
 func check_flap() -> void:
-	if Input.is_action_just_pressed("Flap"):
+	if Input.is_action_just_pressed("Flap") && flap_time == -FLAP_COOLDOWN:
 		flap_time = FLAP_DUR
 		var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
 		playback.travel(FLAP_STATE_NAME)
