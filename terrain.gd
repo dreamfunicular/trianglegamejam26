@@ -1,8 +1,15 @@
 @tool
 extends MeshInstance3D
 
-const size := 256.0
-@export var height := 20.0
+#const size := 256.0
+@export var height := 10.0
+@export var width := 256
+@export var depth := 1536
+
+var minX
+var maxX
+var minZ
+var maxZ
 
 @export_range(4, 256, 4) var resolution := 32:
 	set(new_resolution):
@@ -11,7 +18,7 @@ const size := 256.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	updateMesh()
 
 @export var noise: FastNoiseLite:
 	set(new_noise):
@@ -21,10 +28,10 @@ func _ready() -> void:
 			noise.changed.connect(updateMesh)
 
 func getHeight(x: float, y: float) -> float:
-	return noise.get_noise_2d(x, y) * height + log(abs(y)) * 20 - 50
+	return noise.get_noise_2d(x, y) * height + log(abs(x / 2)) * 20 - 50
 
 func getNormal(x: float, y: float) -> Vector3:
-	var epsilon := size / resolution
+	var epsilon := width / resolution
 	var normal := Vector3(
 		(getHeight(x + epsilon, y) - getHeight(x - epsilon, y)) / (2.0 * epsilon),
 		1.0,
@@ -32,11 +39,15 @@ func getNormal(x: float, y: float) -> Vector3:
 	)
 	return normal.normalized()
 
+func shift() -> void:
+	position.z += 128
+	updateMesh()
+
 func updateMesh() -> void:
 	var plane := PlaneMesh.new()
-	plane.subdivide_depth = resolution
-	plane.subdivide_width = resolution
-	plane.size = Vector2(size, size)
+	plane.subdivide_depth = resolution 
+	plane.subdivide_width = resolution * (depth / width)
+	plane.size = Vector2(width, depth)
 	
 	var planeArrays := plane.get_mesh_arrays()
 	var vertexArray : PackedVector3Array = planeArrays[ArrayMesh.ARRAY_VERTEX]
@@ -46,17 +57,17 @@ func updateMesh() -> void:
 	for i:int in vertexArray.size():
 		var vertex := vertexArray[i]
 		var normal := Vector3.UP
-		var tangent := Vector3.RIGHT		
+		var tangent := Vector3.RIGHT
 		if noise:
-			vertex.y = getHeight(vertex.x, vertex.z)
-			normal = getNormal(vertex.x, vertex.z)
+			vertex.y = getHeight(vertex.x, vertex.z + position.z)
+			normal = getNormal(vertex.x, vertex.z + position.z)
 			tangent = normal.cross(Vector3.UP)
 		vertexArray[i] = vertex
 		normalArray[i] = normal
 		tangentArray[4 * i] = tangent.x
 		tangentArray[4 * i + 1] = tangent.y
-		tangentArray[4 * i + 2] = tangent.z  
+		tangentArray[4 * i + 2] = tangent.z + position.z
 		
 	var arrayMesh := ArrayMesh.new()
-	arrayMesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINES, planeArrays)
+	arrayMesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, planeArrays)
 	mesh = arrayMesh
