@@ -25,9 +25,12 @@ const CAMERA_HEIGHT = 2.0
 var roll : float = 0.0
 
 @export var flight_blend_path: String
+@export var dive_blend_path: String
 @export var air_state_playback_path: String
 const FLIGHT_STATE_NAME : String = "Flight"
+const SUPER_STATE_NAME : String = "SuperFlap"
 const FLAP_STATE_NAME : String = "Flap"
+const DIVE_STATE_NAME : String = "Dive"
 
 var is_bird_surfacing : bool = false
 var camera_in_water : bool = false
@@ -117,6 +120,9 @@ func update_state():
 				
 				boost_click = -NON_BOOST_TIME
 				
+				var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
+				playback.travel(DIVE_STATE_NAME)
+				
 				## TODO: Add Sound Effect
 				## TODO: Add Particles
 		
@@ -124,8 +130,13 @@ func update_state():
 			if position.y > 0:
 				state = PlayerStates.FLY
 				
+				var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
+				
 				if (boost_click > 0.0 && boost_click_2 == -NON_BOOST_TIME):
 					boost_time = BOOST_DUR
+					playback.travel(SUPER_STATE_NAME)
+				else:
+					playback.travel(FLIGHT_STATE_NAME)
 
 func get_speed_lerp() -> float:
 	#if velocity.length() > 50: print("maxed out " + str(randi_range(0, 9)))
@@ -195,7 +206,7 @@ func _physics_process(delta) -> void:
 			
 	# water bird
 		PlayerStates.DIVE:
-			set_wing_amt(0.0)
+			model.get_anim_tree().set(dive_blend_path, clamp(position.y/-10.0, 0.0, 1.0));
 			
 			# Thoughts:
 			# Copy air code, high degree of friction

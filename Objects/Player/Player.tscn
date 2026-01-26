@@ -22,6 +22,7 @@ point_count = 4
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_xhfnw")
 flight_blend_path = "parameters/StateMachine/Flight/blend_position"
+dive_blend_path = "parameters/StateMachine/Dive/blend_position"
 air_state_playback_path = "parameters/StateMachine/playback"
 flap_blend = SubResource("Curve_cac6a")
 boost_blend = SubResource("Curve_y01d7")
