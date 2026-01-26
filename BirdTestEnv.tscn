@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://d4m0cvsjdokv2"]
+[gd_scene load_steps=10 format=3 uid="uid://d4m0cvsjdokv2"]
 
 [ext_resource type="PackedScene" uid="uid://eawuk4olyybv" path="res://Environment/WaterDust.tscn" id="1_boav5"]
 [ext_resource type="PackedScene" uid="uid://soq3fq6874f5" path="res://Objects/Player/Player.tscn" id="1_fmpl0"]
 [ext_resource type="Texture2D" uid="uid://c5mp8fqgsh6r2" path="res://icon.svg" id="2_viqye"]
 [ext_resource type="PackedScene" uid="uid://dpmwr7b8lp1ce" path="res://testing/water_surface.tscn" id="3_boav5"]
+[ext_resource type="PackedScene" uid="uid://cakultn8jtwub" path="res://GUI/GUI.tscn" id="5_8ogt1"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0r40m"]
 sky_top_color = Color(0.3372549, 0.45490196, 1, 1)
@@ -90,3 +91,5 @@ radius = 3.6457748
 
 [node name="WaterContainer" parent="Ground" instance=ExtResource("3_boav5")]
 transform = Transform3D(200, 0, 0, 0, 1, 0, 0, 0, 200, 0, 0, 0)
+
+[node name="Gui" parent="." instance=ExtResource("5_8ogt1")]
