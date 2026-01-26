@@ -1,6 +1,6 @@
 extends CharacterBody3D
 
-const GRAV = -15.0
+const GRAV = -18.0
 
 const CAMERA_ROLL_PERCENT = 0.5
 
@@ -75,13 +75,18 @@ func _input(event) -> void:
 		#rotate_y(clamp(-event.relative.x * mouse_sense, -turn_clamp, turn_clamp))
 		#pitch_pivot.rotate_x(clamp(-event.relative.y * mouse_sense, -turn_clamp, turn_clamp))
 		#roll += event.relative.x * ROLL_SENSE
+		var float_state = state != PlayerStates.FLOAT
 		turn_camera(clamp(-event.relative.x * mouse_sense, -turn_clamp, turn_clamp),
-			clamp(-event.relative.y * mouse_sense, -turn_clamp, turn_clamp))
+			clamp(-event.relative.y * mouse_sense, -turn_clamp, turn_clamp), float_state)
+		if float_state:
+			model.rotation.x = 0.0
+		else:
+			model.rotation.x = -pitch_pivot.rotation.x
 
-func turn_camera(rad_x: float, rad_y: float):
+func turn_camera(rad_x: float, rad_y: float, rolling: bool):
 	rotate_y(rad_x)
 	pitch_pivot.rotate_x(rad_y)
-	roll += -rad_x * ROLL_SENSE
+	if (rolling): roll += -rad_x * ROLL_SENSE
 
 # the vectors it sets store the high and low values of mouse sense and max steer
 # these values are set based on the player's state
@@ -197,10 +202,11 @@ func _physics_process(delta) -> void:
 					velocity += percent_flap * (-transform.basis.z + pitch_pivot.transform.basis.y).normalized() * FLAP_POWER
 				
 				check_flap()
-			#var desired_dir = -pitch_pivot.global_transform.basis.z
+			var desired_dir = -pitch_pivot.global_transform.basis.z
 			
 			#var speed_weight = clamp(20.0 / max(velocity.length(), 1.0), 0.05, 1.0) * 0.9
-			var speed_weight = ease(get_speed_lerp(), 0.3)
+			var speed_weight = pow(ease(get_speed_lerp(), 0.3), 1.4)
+			var turn_weight = (1 - abs(velocity.normalized().dot(desired_dir.normalized()))) / 2
 			
 			#var divespeed_coefficient = 1
 			#if (desired_dir.normalized().y > 0):
@@ -211,7 +217,7 @@ func _physics_process(delta) -> void:
 			
 			#velocity = velocity.lerp(Vector3.ZERO, speed_weight * 0.001 * 60 * delta)
 			#velocity = velocity.slerp(desired_dir * velocity.length(), 1.0 * 0.05 * 60 * delta)
-			steer_and_fric(0.05 * 60 * delta, speed_weight * 0.001 * 60 * delta)
+			steer_and_fric(0.045 * 60 * delta, speed_weight * turn_weight * 0.03 * 60 * delta)
 			
 			#var dot_weight = velocity.normalized().dot(desired_dir.normalized())
 			
@@ -247,7 +253,7 @@ func _physics_process(delta) -> void:
 				#turn_camera(0.0, (pitch.angle_to(Vector3.UP) ** 2) * 0.1 * delta)
 				#turn_camera(0.0, (1.0 - pitch) * 0.15 * delta)
 			
-			turn_camera(0.0, (1.0 - pitch) * clamp((-position.y) / 70, 0.5, 1.0) * 0.5 * (0.6 + 0.4 * int(is_bird_surfacing)) * delta)
+			turn_camera(0.0, (1.0 - pitch) * clamp((-position.y) / 70, 0.5, 1.0) * 0.5 * (0.6 + 0.4 * int(is_bird_surfacing)) * delta, true)
 			steer_and_fric(0.01 * 60 * delta, 0.003 * 60 * delta)
 			
 			if Input.is_action_just_pressed("Flap"):
