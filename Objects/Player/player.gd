@@ -9,8 +9,12 @@ const ROLL_NORMALIZE_SPEED = 4
 
 const MOUSE_SENSE_FREE = Vector2(0.002, 0.004)
 const TURN_CLAMP_FREE = Vector2(PI/72, PI/36)
+const MOUSE_SENSE_BRAKE = Vector2(0.003, 0.006)
+const TURN_CLAMP_BRAKE = Vector2(PI/36, PI/18)
 const MOUSE_SENSE_WATER = Vector2(0.001, 0.001)
 const TURN_CLAMP_WATER = Vector2(PI/108, PI/108)
+const MOUSE_SENSE_FLOAT = Vector2(0.004, 0.004)
+const TURN_CLAMP_FLOAT = Vector2(PI/18, PI/18)
 var mouse_sense_vect = MOUSE_SENSE_FREE
 var turn_clamp_vect = TURN_CLAMP_FREE
 
@@ -32,6 +36,7 @@ const SUPER_STATE_NAME : String = "SuperFlap"
 const FLAP_STATE_NAME : String = "Flap"
 const DIVE_STATE_NAME : String = "Dive"
 const FLOAT_STATE_NAME : String = "Float"
+const BRAKE_STATE_NAME : String = "Airbrake"
 
 var is_bird_surfacing : bool = false
 var camera_in_water : bool = false
@@ -59,7 +64,11 @@ var boost_time = 0.0
 var boost_click = -NON_BOOST_TIME
 var boost_click_2 = -NON_BOOST_TIME
 
+var braking: bool = false
+
 var splash_scene = preload("res://Environment/SplashInstance.tscn")
+
+@onready var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
 
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -95,13 +104,22 @@ func turn_camera(rad_x: float, rad_y: float, rolling: bool):
 func update_steer() -> float:
 	match state:
 		PlayerStates.FLY:
-			mouse_sense_vect = MOUSE_SENSE_FREE
-			turn_clamp_vect = TURN_CLAMP_FREE
+			if braking:
+				mouse_sense_vect = MOUSE_SENSE_BRAKE
+				turn_clamp_vect = TURN_CLAMP_BRAKE
+			else:
+				mouse_sense_vect = MOUSE_SENSE_FREE
+				turn_clamp_vect = TURN_CLAMP_FREE
 			return get_speed_lerp()
 			
 		PlayerStates.DIVE:
 			mouse_sense_vect = MOUSE_SENSE_WATER
 			turn_clamp_vect = TURN_CLAMP_WATER
+			return 0.000
+		
+		PlayerStates.FLOAT:
+			mouse_sense_vect = MOUSE_SENSE_FLOAT
+			turn_clamp_vect = TURN_CLAMP_FLOAT
 			return 0.000
 	
 	return 0.0
@@ -114,7 +132,6 @@ func update_cam():
 		camera_exit_water()
 
 func update_state():
-	var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
 	match state:
 		PlayerStates.FLY:
 			if position.y < 0:
@@ -122,7 +139,6 @@ func update_state():
 					state = PlayerStates.FLOAT
 					velocity.y = 0
 					playback.travel(FLOAT_STATE_NAME)
-					print("back")
 				else:
 					state = PlayerStates.DIVE
 					is_bird_surfacing = false
@@ -150,7 +166,6 @@ func update_state():
 		
 		PlayerStates.FLOAT:
 			if flap_time == FLAP_DUR:
-				print("hello")
 				state = PlayerStates.FLY
 				playback.travel(FLIGHT_STATE_NAME)
 
@@ -196,11 +211,21 @@ func _physics_process(delta) -> void:
 				var percent_boost = boost_blend.sample(1 - boost_time/BOOST_DUR)
 				velocity += percent_boost * (-transform.basis.z + pitch_pivot.transform.basis.y).normalized() * BOOST_POWER
 				#velocity = pow(entry_speed, 1.3) * (-transform.basis.z).normalized()
+				braking = false
 			else:
 				if (flap_time > 0):
 					var percent_flap = flap_blend.sample(1 - flap_time/FLAP_DUR)
 					velocity += percent_flap * (-transform.basis.z + pitch_pivot.transform.basis.y).normalized() * FLAP_POWER
-				
+					braking = false
+				else:
+					if Input.is_action_pressed("Break"):
+						if not braking:
+							braking = true
+							playback.travel(BRAKE_STATE_NAME)
+					else:
+						if braking:
+							braking = false
+							playback.travel(FLIGHT_STATE_NAME)
 				check_flap()
 			var desired_dir = -pitch_pivot.global_transform.basis.z
 			
@@ -217,7 +242,10 @@ func _physics_process(delta) -> void:
 			
 			#velocity = velocity.lerp(Vector3.ZERO, speed_weight * 0.001 * 60 * delta)
 			#velocity = velocity.slerp(desired_dir * velocity.length(), 1.0 * 0.05 * 60 * delta)
-			steer_and_fric(0.045 * 60 * delta, speed_weight * turn_weight * 0.03 * 60 * delta)
+			if braking:
+				steer_and_fric(0.02 * 60 * delta, speed_weight * turn_weight * 0.03 * 60 * delta)
+			else:
+				steer_and_fric(0.045 * 60 * delta, speed_weight * turn_weight * 0.03 * 60 * delta)
 			
 			#var dot_weight = velocity.normalized().dot(desired_dir.normalized())
 			
@@ -276,7 +304,6 @@ func steer_and_fric(steer_weight: float, fric_weight: float):
 func check_flap() -> void:
 	if Input.is_action_just_pressed("Flap") && flap_time == -FLAP_COOLDOWN:
 		flap_time = FLAP_DUR
-		var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
 		playback.travel(FLAP_STATE_NAME)
 		
 		# and play a sound

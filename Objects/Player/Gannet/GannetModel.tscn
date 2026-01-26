@@ -1,7 +1,10 @@
-[gd_scene load_steps=24 format=3 uid="uid://bbs4qg2o8ouf0"]
+[gd_scene load_steps=28 format=3 uid="uid://bbs4qg2o8ouf0"]
 
 [ext_resource type="PackedScene" uid="uid://clijbc83dvs46" path="res://Objects/Player/Gannet/Gannet.glb" id="1_f44ki"]
 [ext_resource type="Script" uid="uid://cr3fg27t5ir3a" path="res://Objects/Player/Gannet/gannet_model.gd" id="2_2yy71"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qqojt"]
+animation = &"Airbrake"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2yy71"]
 animation = &"Dive"
@@ -70,7 +73,18 @@ xfade_time = 0.3
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_de2vh"]
 xfade_time = 0.3
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8o1uc"]
+xfade_time = 0.3
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_c3qew"]
+xfade_time = 0.2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_y8wea"]
+xfade_time = 0.2
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_1v6j1"]
+states/Airbrake/node = SubResource("AnimationNodeAnimation_qqojt")
+states/Airbrake/position = Vector2(395, 35)
 states/Dive/node = SubResource("AnimationNodeBlendSpace1D_qqojt")
 states/Dive/position = Vector2(515, 78)
 states/Flap/node = SubResource("AnimationNodeAnimation_vg85i")
@@ -82,10 +96,10 @@ states/Float/position = Vector2(297, 53)
 states/Start/position = Vector2(178, 120)
 states/SuperFlap/node = SubResource("AnimationNodeAnimation_bqfct")
 states/SuperFlap/position = Vector2(515, 191)
-transitions = ["Start", "Flight", SubResource("AnimationNodeStateMachineTransition_j5jfc"), "Flight", "Flap", SubResource("AnimationNodeStateMachineTransition_fjrfw"), "Flap", "Flight", SubResource("AnimationNodeStateMachineTransition_glitr"), "Flight", "Dive", SubResource("AnimationNodeStateMachineTransition_vg85i"), "Dive", "Flight", SubResource("AnimationNodeStateMachineTransition_1v6j1"), "Dive", "SuperFlap", SubResource("AnimationNodeStateMachineTransition_qfq2m"), "SuperFlap", "Flight", SubResource("AnimationNodeStateMachineTransition_n4equ"), "Flight", "Float", SubResource("AnimationNodeStateMachineTransition_2yy71"), "Float", "Flight", SubResource("AnimationNodeStateMachineTransition_de2vh")]
+transitions = ["Start", "Flight", SubResource("AnimationNodeStateMachineTransition_j5jfc"), "Flight", "Flap", SubResource("AnimationNodeStateMachineTransition_fjrfw"), "Flap", "Flight", SubResource("AnimationNodeStateMachineTransition_glitr"), "Flight", "Dive", SubResource("AnimationNodeStateMachineTransition_vg85i"), "Dive", "Flight", SubResource("AnimationNodeStateMachineTransition_1v6j1"), "Dive", "SuperFlap", SubResource("AnimationNodeStateMachineTransition_qfq2m"), "SuperFlap", "Flight", SubResource("AnimationNodeStateMachineTransition_n4equ"), "Flight", "Float", SubResource("AnimationNodeStateMachineTransition_2yy71"), "Float", "Flight", SubResource("AnimationNodeStateMachineTransition_de2vh"), "Flight", "Airbrake", SubResource("AnimationNodeStateMachineTransition_8o1uc"), "Airbrake", "Dive", SubResource("AnimationNodeStateMachineTransition_c3qew"), "Airbrake", "Flight", SubResource("AnimationNodeStateMachineTransition_y8wea")]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_bqfct"]
-graph_offset = Vector2(-122.88422, 57.787445)
+graph_offset = Vector2(-142.1878, 69.453)
 nodes/output/position = Vector2(1020, 180)
 nodes/StateMachine/node = SubResource("AnimationNodeStateMachine_1v6j1")
 nodes/StateMachine/position = Vector2(720, 180)
@@ -94,8 +108,28 @@ node_connections = [&"output", 0, &"StateMachine"]
 [node name="Gannet2" instance=ExtResource("1_f44ki")]
 script = ExtResource("2_2yy71")
 
+[node name="Skeleton3D" parent="Gannet" index="0"]
+bones/0/position = Vector3(7.067092e-18, 0.01867144, 0.1457972)
+bones/0/rotation = Quaternion(-0.6842165, 2.7267258e-16, 2.7267256e-16, 0.729279)
+bones/1/position = Vector3(0.11648273, 0.06811876, -0.031372353)
+bones/1/rotation = Quaternion(0.1811994, 0.33259723, -0.19909906, 0.9038282)
+bones/1/scale = Vector3(0.99999976, 0.9999999, 1.0000001)
+bones/2/rotation = Quaternion(-0.4933947, -0.4136083, -0.7208214, 0.2567223)
+bones/3/position = Vector3(2.9667144e-16, 0.38323998, -0.0015201494)
+bones/3/rotation = Quaternion(-0.11342332, -8.733231e-18, 4.5849334e-17, 0.9935468)
+bones/4/position = Vector3(2.0352203e-17, -0.055216767, 0.0035242194)
+bones/4/rotation = Quaternion(-4.3711243e-08, 0.06639878, 0.99779326, 1.184134e-10)
+bones/5/rotation = Quaternion(-0.9453356, 3.533822e-16, -1.4538303e-16, 0.3260991)
+bones/6/rotation = Quaternion(-0.024443828, -0.0009606602, -0.03925854, 0.9989296)
+bones/7/position = Vector3(-0.11648273, 0.06811876, -0.031372353)
+bones/7/rotation = Quaternion(0.1811994, -0.33259723, 0.19909906, 0.9038282)
+bones/7/scale = Vector3(0.99999976, 0.9999999, 1.0000001)
+bones/8/rotation = Quaternion(-0.4933947, 0.4136083, 0.7208214, 0.2567223)
+bones/9/rotation = Quaternion(-0.98788774, 3.6338484e-16, -6.952247e-17, 0.15517013)
+bones/10/rotation = Quaternion(-0.42418054, 0.01667056, 0.03555627, 0.9047258)
+
 [node name="AnimationTree" type="AnimationTree" parent="." index="2"]
 tree_root = SubResource("AnimationNodeBlendTree_bqfct")
 anim_player = NodePath("../AnimationPlayer")
 parameters/StateMachine/Dive/blend_position = 1.0671642
-parameters/StateMachine/Flight/blend_position = 0.021831
+parameters/StateMachine/Flight/blend_position = -0.43134326
