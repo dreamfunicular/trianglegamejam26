@@ -1,0 +1,76 @@
+[gd_scene load_steps=18 format=3 uid="uid://dpmwr7b8lp1ce"]
+
+[ext_resource type="Shader" uid="uid://cpbegb37y0udh" path="res://testing/water.gdshader" id="1_bu3dp"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0tou4"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cowgd"]
+noise = SubResource("FastNoiseLite_0tou4")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_cowgd"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vown8"]
+noise = SubResource("FastNoiseLite_cowgd")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_pndpp"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_umbn0"]
+noise = SubResource("FastNoiseLite_pndpp")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0tou4"]
+render_priority = 0
+shader = ExtResource("1_bu3dp")
+shader_parameter/height_scale = 0.5
+shader_parameter/noiseA = SubResource("NoiseTexture2D_cowgd")
+shader_parameter/noiseB = SubResource("NoiseTexture2D_vown8")
+shader_parameter/noiseC = SubResource("NoiseTexture2D_umbn0")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_cowgd"]
+material = SubResource("ShaderMaterial_0tou4")
+subdivide_width = 512
+subdivide_depth = 512
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vown8"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pndpp"]
+noise = SubResource("FastNoiseLite_vown8")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_umbn0"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0e7a6"]
+noise = SubResource("FastNoiseLite_umbn0")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_yira6"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e0ipe"]
+noise = SubResource("FastNoiseLite_yira6")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_np1v4"]
+render_priority = 0
+shader = ExtResource("1_bu3dp")
+shader_parameter/height_scale = 0.5
+shader_parameter/noiseA = SubResource("NoiseTexture2D_pndpp")
+shader_parameter/noiseB = SubResource("NoiseTexture2D_0e7a6")
+shader_parameter/noiseC = SubResource("NoiseTexture2D_e0ipe")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_b1pxw"]
+material = SubResource("ShaderMaterial_np1v4")
+flip_faces = true
+subdivide_width = 512
+subdivide_depth = 512
+
+[node name="WaterContainer" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_cowgd")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_b1pxw")
+skeleton = NodePath("../..")

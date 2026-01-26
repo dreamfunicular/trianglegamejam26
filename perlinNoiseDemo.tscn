@@ -44,6 +44,7 @@ mesh = SubResource("ArrayMesh_otfei")
 skeleton = NodePath("../..")
 script = ExtResource("1_sg0ef")
 height = 64.0
+depth = 768
 resolution = 64
 noise = SubResource("FastNoiseLite_rkvti")
 

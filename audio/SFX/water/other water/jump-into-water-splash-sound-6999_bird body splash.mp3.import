@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cfqe2cnokrf7t"
+path="res://.godot/imported/jump-into-water-splash-sound-6999_bird body splash.mp3-c19a333a8e0b134445d2aa609ee38155.mp3str"
+
+[deps]
+
+source_file="res://audio/SFX/water/other water/jump-into-water-splash-sound-6999_bird body splash.mp3"
+dest_files=["res://.godot/imported/jump-into-water-splash-sound-6999_bird body splash.mp3-c19a333a8e0b134445d2aa609ee38155.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

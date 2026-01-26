@@ -1,19 +1,27 @@
-[gd_scene load_steps=7 format=3 uid="uid://d4m0cvsjdokv2"]
+[gd_scene load_steps=9 format=3 uid="uid://d4m0cvsjdokv2"]
 
+[ext_resource type="PackedScene" uid="uid://eawuk4olyybv" path="res://Environment/WaterDust.tscn" id="1_boav5"]
 [ext_resource type="PackedScene" uid="uid://soq3fq6874f5" path="res://Objects/Player/Player.tscn" id="1_fmpl0"]
 [ext_resource type="Texture2D" uid="uid://c5mp8fqgsh6r2" path="res://icon.svg" id="2_viqye"]
+[ext_resource type="PackedScene" uid="uid://dpmwr7b8lp1ce" path="res://testing/water_surface.tscn" id="3_boav5"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fmpl0"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0r40m"]
+sky_top_color = Color(0.3372549, 0.45490196, 1, 1)
+sky_horizon_color = Color(0.4482649, 0.66382855, 0.89558715, 1)
+sky_curve = 0.083217986
+ground_bottom_color = Color(0.2, 0.23529412, 0.3764706, 1)
+ground_horizon_color = Color(0.44705883, 0.6627451, 0.89411765, 1)
+ground_curve = 17.221617
 
-[sub_resource type="Sky" id="Sky_viqye"]
-sky_material = SubResource("ProceduralSkyMaterial_fmpl0")
+[sub_resource type="Sky" id="Sky_boav5"]
+sky_material = SubResource("ProceduralSkyMaterial_0r40m")
 
 [sub_resource type="Environment" id="Environment_0r40m"]
 background_mode = 2
-sky = SubResource("Sky_viqye")
-tonemap_mode = 2
+background_color = Color(0.86678934, 0.7117472, 0.8747147, 1)
+sky = SubResource("Sky_boav5")
+tonemap_exposure = 0.8
+ssao_enabled = true
 glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fmpl0"]
@@ -21,6 +29,9 @@ albedo_color = Color(0.3254902, 0.28627452, 1, 1)
 albedo_texture = ExtResource("2_viqye")
 
 [node name="Node3D" type="Node3D"]
+
+[node name="WaterDust" parent="." instance=ExtResource("1_boav5")]
+amount = 265
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.12975238, 0.3116533, -0.94129515, 0.113793835, 0.93836766, 0.32636994, 0.9849951, -0.1494608, 0.08629121, -0.3389082, 0, 0.12492108)
@@ -36,10 +47,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23.281277, 48.77247)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.7514725, 2.9563904e-05, 0)
 material_override = SubResource("StandardMaterial3D_fmpl0")
 use_collision = true
-
-[node name="CSGBox3D" type="CSGBox3D" parent="Ground"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.59964, -0.09553814, -65.53262)
-size = Vector3(267.44757, 1, 568.122)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -287.28146, 45.80746, -65.53262)
@@ -80,3 +87,6 @@ radius = 4.7563915
 [node name="CSGSphere3D8" type="CSGSphere3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.443924, 0.116912365, -31.549408)
 radius = 3.6457748
+
+[node name="WaterContainer" parent="Ground" instance=ExtResource("3_boav5")]
+transform = Transform3D(200, 0, 0, 0, 1, 0, 0, 0, 200, 0, 0, 0)

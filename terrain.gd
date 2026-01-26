@@ -6,18 +6,13 @@ extends MeshInstance3D
 @export var width := 256
 @export var depth := 1536
 
-var minX
-var maxX
-var minZ
-var maxZ
-
 @export_range(4, 256, 4) var resolution := 32:
 	set(new_resolution):
 		resolution = new_resolution
 		updateMesh()
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:
+func ready() -> void:
 	updateMesh()
 
 @export var noise: FastNoiseLite:
@@ -56,17 +51,18 @@ func updateMesh() -> void:
 	
 	for i:int in vertexArray.size():
 		var vertex := vertexArray[i]
+		vertex.z += position.z
 		var normal := Vector3.UP
 		var tangent := Vector3.RIGHT
 		if noise:
-			vertex.y = getHeight(vertex.x, vertex.z + position.z)
-			normal = getNormal(vertex.x, vertex.z + position.z)
+			vertex.y = getHeight(vertex.x, vertex.z)
+			normal = getNormal(vertex.x, vertex.z)
 			tangent = normal.cross(Vector3.UP)
 		vertexArray[i] = vertex
 		normalArray[i] = normal
 		tangentArray[4 * i] = tangent.x
 		tangentArray[4 * i + 1] = tangent.y
-		tangentArray[4 * i + 2] = tangent.z + position.z
+		tangentArray[4 * i + 2] = tangent.z
 		
 	var arrayMesh := ArrayMesh.new()
 	arrayMesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, planeArrays)

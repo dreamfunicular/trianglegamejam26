@@ -1,7 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://dd68nbxyrey6x"]
+[gd_scene load_steps=6 format=3 uid="uid://dd68nbxyrey6x"]
 
 [ext_resource type="Shader" uid="uid://cyvwflxi8xwnq" path="res://testing/underwater.gdshader" id="1_82g3i"]
-[ext_resource type="Script" uid="uid://d0wss6v5r63rq" path="res://testing/underwater_effect.gd" id="1_522x8"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_82g3i"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_522x8"]
+noise = SubResource("FastNoiseLite_82g3i")
+seamless = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ooj1y"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ilhii"]
 shader = ExtResource("1_82g3i")
@@ -9,11 +16,12 @@ shader_parameter/activate = 0.0
 shader_parameter/water_color = Color(0, 0, 0.39297795, 1)
 shader_parameter/color_intensity = 0.62999998591824
 shader_parameter/speed = 1.0
-shader_parameter/wave = 57.90000086277948
-shader_parameter/warp = 9.569999789816679
+shader_parameter/wave = 26.90000040084228
+shader_parameter/warp = 9.56999978981668
+shader_parameter/noiseA = SubResource("NoiseTexture2D_522x8")
+shader_parameter/noiseB = SubResource("NoiseTexture2D_ooj1y")
 
 [node name="UnderwaterEffect" type="CanvasLayer"]
-script = ExtResource("1_522x8")
 
 [node name="Shader" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_ilhii")

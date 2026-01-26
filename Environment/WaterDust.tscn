@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=3 uid="uid://eawuk4olyybv"]
+
+[ext_resource type="Script" uid="uid://cnwl5dug2kik8" path="res://Environment/water_dust.gd" id="1_xyyxh"]
+
+[sub_resource type="Curve" id="Curve_06bp6"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.25, 1), 0.0, 0.0, 0, 0, Vector2(0.75, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_xyyxh"]
+curve = SubResource("Curve_06bp6")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_06bp6"]
+emission_shape = 3
+emission_box_extents = Vector3(128, 128, 128)
+angle_min = 160.90001
+angle_max = 160.90001
+spread = 180.0
+flatness = 1.0
+initial_velocity_max = 0.02
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_xyyxh")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qks6s"]
+shading_mode = 0
+
+[sub_resource type="SphereMesh" id="SphereMesh_ib0xl"]
+material = SubResource("StandardMaterial3D_qks6s")
+radius = 0.2
+height = 0.4
+radial_segments = 16
+rings = 8
+
+[node name="WaterDust" type="GPUParticles3D"]
+amount = 1028
+lifetime = 3.0
+visibility_aabb = AABB(-128, -128, -128, 256, 256, 256)
+process_material = SubResource("ParticleProcessMaterial_06bp6")
+draw_pass_1 = SubResource("SphereMesh_ib0xl")
+script = ExtResource("1_xyyxh")

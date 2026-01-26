@@ -15,6 +15,9 @@ uniform float wave: hint_range(0.0, 100.0, 0.1) = 20.0;
 // The distance to offset by
 uniform float warp: hint_range(0.1, 20.0, 0.01) = 5.0;
 
+uniform sampler2D noiseA;
+uniform sampler2D noiseB;
+
 void fragment() {
 	vec2 uv = SCREEN_UV;
 	float time = TIME * speed;
@@ -23,7 +26,11 @@ void fragment() {
 	uv.x += sin(s.x - s.y) * warp * 1e-3 * sin(s.y);
 	uv.y += cos(s.x - s.y) * warp * 1e-3 * cos(s.y);
 
-
+	vec2 offsetA = 0.02 * cos(uv - 0.3 * TIME) + 5.8 * TIME * vec2(0.04, 0.01);
+	vec2 offsetB = 0.09 * sin(uv + 2.4 * TIME) + 4.6 * TIME * vec2(-0.01, 0.03);
+	uv += vec2(-.9, -.4) * 0.03 * texture(noiseA, uv / 0.33 + offsetA).x;
+	uv += vec2(.9, -.1) * 0.02 * texture(noiseB, uv / 0.25 + offsetB).x;
+	uv += vec2(0.008, 0.0);
 
 	// actually load that UV now that we are done toying around with it
 	uv = mix(SCREEN_UV, uv, activate);
