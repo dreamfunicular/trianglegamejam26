@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://ccgdkd8i37poi"]
+
+[ext_resource type="Script" uid="uid://cn03dedtm7wpa" path="res://GUI/Score/score.gd" id="1_bwoo1"]
+[ext_resource type="FontFile" uid="uid://cunm5ocgnwtyr" path="res://GUI/ARCADE_R.TTF" id="2_6n6pn"]
+
+[node name="Score" type="VBoxContainer"]
+script = ExtResource("1_bwoo1")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_6n6pn")
+theme_override_font_sizes/font_size = 32
+text = "Score"
+
+[node name="Display" type="Label" parent="."]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_6n6pn")
+theme_override_font_sizes/font_size = 48
+text = "0000"

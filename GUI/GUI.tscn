@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://cakultn8jtwub"]
+
+[ext_resource type="PackedScene" uid="uid://ccgdkd8i37poi" path="res://GUI/Score/Score.tscn" id="1_17ifr"]
+[ext_resource type="PackedScene" uid="uid://cd36jgcwptrl6" path="res://GUI/Stamina Bar/Stamina.tscn" id="2_1x7qj"]
+
+[node name="Gui" type="CanvasLayer"]
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Score" parent="MarginContainer" instance=ExtResource("1_17ifr")]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Stamina" parent="MarginContainer" instance=ExtResource("2_1x7qj")]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
