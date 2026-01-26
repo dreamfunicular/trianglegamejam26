@@ -47,13 +47,16 @@ enum PlayerStates {
 var state: PlayerStates = PlayerStates.FLY
 
 @export var flap_blend: Curve
-const FLAP_POWER = 1.5
+const FLAP_COST = 6.0
+const FLAP_POWER = 1.25
 const FLAP_DUR = 1.75
 const FLAP_COOLDOWN = 0.5
 var flap_time = -FLAP_COOLDOWN
 
+@onready var gui = get_tree().root.find_child("Gui", true, false)
+
 @export var boost_blend: Curve
-const BOOST_POWER = 2.0
+const BOOST_POWER = 1.8
 const BOOST_BUF = 0.1
 const NON_BOOST_TIME = 0.3
 const BOOST_DUR = 2.0
@@ -281,7 +284,7 @@ func steer_and_fric(steer_weight: float, fric_weight: float):
 	velocity = velocity.slerp(desired_dir * velocity.length(), steer_weight)
 
 func check_flap() -> void:
-	if Input.is_action_just_pressed("Flap") && flap_time == -FLAP_COOLDOWN:
+	if Input.is_action_just_pressed("Flap") && flap_time == -FLAP_COOLDOWN && gui.use_stamina(FLAP_COST):
 		flap_time = FLAP_DUR
 		playback.travel(FLAP_STATE_NAME)
 		
@@ -314,3 +317,9 @@ func camera_exit_water():
 	
 	## TODO add any sound adjustments
 	SongPlayer.exit_water()
+
+func _on_area_3d_body_entered(body: Node3D) -> void:
+	if body.has_method("get_id"):
+		var id = body.get_id()
+		gui.get_fish(id)
+		body.die()

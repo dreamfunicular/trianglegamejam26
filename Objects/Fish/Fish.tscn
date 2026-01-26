@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://cjkdid7cig84q"]
+
+[ext_resource type="PackedScene" uid="uid://3ci824vmssl8" path="res://Objects/Fish/Squid.glb" id="1_1f4eu"]
+[ext_resource type="Script" uid="uid://ddkofmxjhn8oc" path="res://Objects/Fish/fish.gd" id="1_ukc5q"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ukc5q"]
+radius = 0.5678711
+height = 6.094284
+
+[node name="Fish" type="CharacterBody3D"]
+script = ExtResource("1_ukc5q")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1.9106855e-15, -4.371139e-08, 1, -1, -4.371139e-08, 0, 4.371139e-08, -1, -4.371139e-08, 2.961437e-08, 2.961437e-08, 0.67749786)
+shape = SubResource("CapsuleShape3D_ukc5q")
+
+[node name="Squid2" parent="." instance=ExtResource("1_1f4eu")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
