@@ -1,4 +1,4 @@
-extends Node2D
+extends Node
 
 
 func _ready():
@@ -10,7 +10,7 @@ func _ready():
 
 func enter_water():
 	var tween = create_tween()
-	tween.tween_property($"Below Water", "volume_db", -12.0, 0.2).set_trans(Tween.TRANS_EXPO)
+	tween.tween_property($"Below Water", "volume_db", -4.0, 0.2).set_trans(Tween.TRANS_EXPO)
 	
 	var bus_index := AudioServer.get_bus_index("MainMusic")
 	var effect: AudioEffectFilter = AudioServer.get_bus_effect(bus_index, 0)

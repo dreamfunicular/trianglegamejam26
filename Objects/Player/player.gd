@@ -68,6 +68,7 @@ var shake_time : float = 0.0
 var shake_dir : float = 0.0
 
 var splash_scene = preload("res://Environment/SplashInstance.tscn")
+var upward_splash_scene = preload("res://Environment/UpwardSplashInstance.tscn")
 
 @onready var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
 
@@ -169,17 +170,18 @@ func update_state():
 					
 					playback.travel(DIVE_STATE_NAME)
 					
-					## TODO: Add Sound Effect
-					## TODO: Add Particles
 		
 		PlayerStates.DIVE:
 			if position.y > 0:
 				state = PlayerStates.FLY
+				var _new_up_spash = upward_splash_scene.instantiate()
+				add_sibling(_new_up_spash)
 				
 				if (boost_click > 0.0 && boost_click_2 == -NON_BOOST_TIME):
 					boost_time = BOOST_DUR
 					playback.travel(SUPER_STATE_NAME)
 					set_shake(1.0)
+					$"BirdSounds/Burst Hit Noise".play()
 				else:
 					playback.travel(FLIGHT_STATE_NAME)
 		
@@ -301,6 +303,7 @@ func camera_enter_water():
 	tween.tween_method(func(value): set_shader_value("activate", value), 0.0, 1.0, 0.1); # args are: (method to call / start value / end value / duration of animation)
 	
 	## TODO add sound adjustments
+	SongPlayer.enter_water()
 
 func camera_exit_water():
 	camera_in_water = false
@@ -310,3 +313,4 @@ func camera_exit_water():
 	tween.tween_method(func(value): set_shader_value("activate", value), 1.0, 0.0, 0.1); # args are: (method to call / start value / end value / duration of animation)
 	
 	## TODO add any sound adjustments
+	SongPlayer.exit_water()

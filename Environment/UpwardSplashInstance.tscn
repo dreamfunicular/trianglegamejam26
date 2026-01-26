@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://dtrhahv1wb0o2"]
+
+[ext_resource type="Script" uid="uid://dwltxun3qtlyu" path="res://Environment/splash_instance.gd" id="1_ud4dy"]
+[ext_resource type="AudioStream" uid="uid://342by0pl7knt" path="res://audio/SFX/water/upsplash 1.ogg" id="2_ud4dy"]
+[ext_resource type="AudioStream" uid="uid://bx15jpamowm4v" path="res://audio/SFX/water/upsplash 2.ogg" id="3_xk2hi"]
+[ext_resource type="AudioStream" uid="uid://4hjkm1isadsa" path="res://audio/SFX/water/upsplash 3a.ogg" id="4_vorq7"]
+
+[node name="UpwardSplashInstance" type="Node3D"]
+script = ExtResource("1_ud4dy")
+
+[node name="Sounds" type="Node3D" parent="."]
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Sounds"]
+stream = ExtResource("2_ud4dy")
+volume_db = 6.0
+
+[node name="AudioStreamPlayer3D2" type="AudioStreamPlayer3D" parent="Sounds"]
+stream = ExtResource("3_xk2hi")
+volume_db = 6.0
+
+[node name="AudioStreamPlayer3D3" type="AudioStreamPlayer3D" parent="Sounds"]
+stream = ExtResource("4_vorq7")
+volume_db = 8.0

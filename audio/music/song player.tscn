@@ -1,23 +1,25 @@
 [gd_scene load_steps=4 format=3 uid="uid://c4nva66m374st"]
 
 [ext_resource type="Script" uid="uid://cjkyj5yfk382v" path="res://audio/music/song_player.gd" id="1_a1gr8"]
-[ext_resource type="AudioStream" uid="uid://de7rhtt664mex" path="res://audio/music/bird game fly above.wav" id="2_8jmgw"]
-[ext_resource type="AudioStream" uid="uid://cgsubx2pwdc57" path="res://audio/music/bird game fly CHORDS.wav" id="3_88p2u"]
+[ext_resource type="AudioStream" uid="uid://cy81ybsr1q21f" path="res://audio/music/bird game fly above.wav" id="2_8jmgw"]
+[ext_resource type="AudioStream" uid="uid://m2pvbvgxuimu" path="res://audio/music/bird game fly CHORDS.wav" id="3_88p2u"]
 
-[node name="SongPlayer" type="Node2D"]
+[node name="SongPlayer" type="Node"]
 script = ExtResource("1_a1gr8")
 
 [node name="Above Water" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(569, 257)
+position = Vector2(600, 325)
 stream = ExtResource("2_8jmgw")
 volume_db = 6.0
 bus = &"MainMusic"
 
 [node name="Below Water" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(555, 259)
+position = Vector2(600, 325)
 stream = ExtResource("3_88p2u")
+volume_db = -80.0
 
 [node name="Button" type="Button" parent="."]
+visible = false
 offset_left = 537.0
 offset_top = 127.0
 offset_right = 691.0
@@ -25,6 +27,7 @@ offset_bottom = 158.0
 text = "click to do in water"
 
 [node name="Button2" type="Button" parent="."]
+visible = false
 offset_left = 16.0
 offset_top = 51.0
 offset_right = 130.0

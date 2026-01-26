@@ -2,7 +2,7 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://cgsubx2pwdc57"
+uid="uid://m2pvbvgxuimu"
 path="res://.godot/imported/bird game fly CHORDS.wav-33b23fdfc51ea4ab577494f76f473761.sample"
 
 [deps]
@@ -18,7 +18,7 @@ force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false
 edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
+edit/loop_mode=2
+edit/loop_begin=378022
 edit/loop_end=-1
 compress/mode=2
