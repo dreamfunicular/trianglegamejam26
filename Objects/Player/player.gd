@@ -21,8 +21,8 @@ var turn_clamp_vect = TURN_CLAMP_FREE
 @onready var model = $PitchPivot/Gannet2
 
 # Camera settings (COME BACK TO THESE FOR SPEED STUFF)
-const CAMERA_DISTANCE = 5.0
-const CAMERA_HEIGHT = 2.0
+const CAMERA_DISTANCE = 4.0
+const CAMERA_HEIGHT = 1.6
 
 var roll : float = 0.0
 
@@ -61,24 +61,26 @@ var boost_time = 0.0
 var boost_click = -NON_BOOST_TIME
 var boost_click_2 = -NON_BOOST_TIME
 
+const SHAKE_FREQUENCY : float = 0.2
+var shake_mag : float = 0.0
+var shake_target : float = 0.0
+var shake_time : float = 0.0
+var shake_dir : float = 0.0
+
 var splash_scene = preload("res://Environment/SplashInstance.tscn")
 
 @onready var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
 
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	camera.position = Vector3(0, CAMERA_HEIGHT, CAMERA_DISTANCE)
 	
-	velocity = -transform.basis.z * 50.0
+	velocity = -transform.basis.z * 30.0
 
 func _input(event) -> void:
 	if event is InputEventMouseMotion:
 		var weight = update_steer()
 		var mouse_sense = lerp(mouse_sense_vect.y, mouse_sense_vect.x, weight)
 		var turn_clamp = lerp(turn_clamp_vect.y, turn_clamp_vect.x, weight)
-		#rotate_y(clamp(-event.relative.x * mouse_sense, -turn_clamp, turn_clamp))
-		#pitch_pivot.rotate_x(clamp(-event.relative.y * mouse_sense, -turn_clamp, turn_clamp))
-		#roll += event.relative.x * ROLL_SENSE
 		var float_state = state != PlayerStates.FLOAT
 		turn_camera(clamp(-event.relative.x * mouse_sense, -turn_clamp, turn_clamp),
 			clamp(-event.relative.y * mouse_sense, -turn_clamp, turn_clamp), float_state)
@@ -115,12 +117,37 @@ func update_steer() -> float:
 	
 	return 0.0
 
-func update_cam():
+func set_shake(shake: float):
+	if (shake > shake_target):
+		shake_target = shake
+
+func update_cam(delta: float):
+	var weight = clamp((velocity.length() - 20.0) / 80.0, 0.0, 1.0)
+	
+	camera.fov = lerp(75.0, 125.0, weight)
+	
+	shake_time += delta
+	shake_target = move_toward(shake_target, 0.0, 0.01 * 60 * delta)
+	shake_mag = lerp(shake_mag, shake_target, 0.1 * 60 * delta)
+	
+	if (shake_time > SHAKE_FREQUENCY):
+		shake_time = 0.0
+		shake_dir += randf_range(0.6 * PI, 1.4 * PI)
+		shake_dir = fposmod(shake_dir, TAU)
+	
+	var offset = sin(shake_time / SHAKE_FREQUENCY * PI) * shake_mag * Vector2.from_angle(shake_dir) * 0.3
+	
+	#camera.position = Vector3(offset.x, CAMERA_HEIGHT + offset.y, CAMERA_DISTANCE)
+	camera.position = Vector3(0, CAMERA_HEIGHT, CAMERA_DISTANCE)
+	camera.rotation.y = offset.x * PI / 9
+	camera.rotation.x = offset.y * PI / 9
+	
 	if (camera.global_position.y < 0 && not camera_in_water):
 		camera_enter_water()
 	
 	if (camera.global_position.y > 0 && camera_in_water):
 		camera_exit_water()
+	
 
 func update_state():
 	match state:
@@ -152,6 +179,7 @@ func update_state():
 				if (boost_click > 0.0 && boost_click_2 == -NON_BOOST_TIME):
 					boost_time = BOOST_DUR
 					playback.travel(SUPER_STATE_NAME)
+					set_shake(1.0)
 				else:
 					playback.travel(FLIGHT_STATE_NAME)
 		
@@ -161,7 +189,6 @@ func update_state():
 				playback.travel(FLIGHT_STATE_NAME)
 
 func get_speed_lerp() -> float:
-	#if velocity.length() > 50: print("maxed out " + str(randi_range(0, 9)))
 	return min(1.0, velocity.length() / 50)
 
 func set_wing_amt(wing_amount: float) -> void:
@@ -178,7 +205,7 @@ func decrement_counter(counter: float, amt: float, delta: float) -> float:
 func _physics_process(delta) -> void:
 	# updates all info about where the bird and the camera are
 	update_state()
-	update_cam()
+	update_cam(delta)
 	
 	var wing_amt_height = clamp(position.y/2.0, 0.0, 1.0)
 	var wing_amt_dive = clamp(1.2 - pitch_pivot.global_transform.basis.z.normalized().y * 1.4, 0.0, 1.0)
@@ -211,36 +238,14 @@ func _physics_process(delta) -> void:
 				check_flap()
 			var desired_dir = -pitch_pivot.global_transform.basis.z
 			
-			#var speed_weight = clamp(20.0 / max(velocity.length(), 1.0), 0.05, 1.0) * 0.9
 			var speed_weight = pow(ease(get_speed_lerp(), 0.3), 1.4)
 			var turn_weight = pow((1 - abs(velocity.normalized().dot(desired_dir.normalized()))), 1.3)
 			
-			#var divespeed_coefficient = 1
-			#if (desired_dir.normalized().y > 0):
-				#divespeed_coefficient = 1 + desired_dir.normalized().y * 10
-			
-			#velocity = velocity.lerp(desired_dir * velocity.length(), divespeed_coefficient * speed_weight * 0.05 * 60 * delta)
-			#velocity = velocity.slerp(desired_dir * velocity.length(), divespeed_coefficient * speed_weight * 0.05 * 60 * delta)
-			
-			#velocity = velocity.lerp(Vector3.ZERO, speed_weight * 0.001 * 60 * delta)
-			#velocity = velocity.slerp(desired_dir * velocity.length(), 1.0 * 0.05 * 60 * delta)
 			steer_and_fric(0.045 * 60 * delta, speed_weight * turn_weight * 0.025 * 60 * delta)
-			
-			#var dot_weight = velocity.normalized().dot(desired_dir.normalized())
 			
 	# water bird
 		PlayerStates.DIVE:
 			model.get_anim_tree().set(dive_blend_path, clamp(position.y/-10.0, 0.0, 1.0));
-			
-			# Thoughts:
-			# Copy air code, high degree of friction
-			# ... (vel * 0.9 or smth every frame modified by delta)
-			# When facing up or dropping below a speed or above a certain timer, go back up
-			# Have a max speed otw back up ---- clamp to entry speed * 0.9 or smth !!!!
-			
-			# this math is kinda temp still but i like the vibe of it.
-			# basically the longer you stay pointed down the longer you go
-			# tthink about it like variable height jump from mario
 			
 			var pitch = pitch_pivot.global_transform.basis.z.normalized().y # -1 is straight up, 1 is straight down
 			if pitch < -0.1 or velocity.length() < 10.0 or is_bird_surfacing or velocity.y > 0: # facing up
@@ -251,7 +256,6 @@ func _physics_process(delta) -> void:
 			
 			else:
 				velocity.y += (pow(-position.y, 1.2) / 100 + 0.5) * delta * 60
-				print(-position.y)
 			
 			var speed_weight = 1.0 - clamp(velocity.length() / 50, 0.2, 1.0)
 			turn_camera(0.0, (1.0 - pitch) * clamp((-position.y) / 70, 0.5, 1.0) * 0.5 * (0.6 + 0.4 * int(is_bird_surfacing)) * delta, true)
@@ -282,6 +286,8 @@ func check_flap() -> void:
 		# and play a sound
 		var num = randi_range(0, 4) 
 		$BirdSounds/Flap.get_child(num).play()
+		
+		set_shake(0.4)
 
 func set_shader_value(param: String, value):
 	$UnderwaterEffect.get_child(0).material.set_shader_parameter(param, value);
