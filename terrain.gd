@@ -1,7 +1,6 @@
 @tool
 extends MeshInstance3D
 
-#const size := 256.0
 @export var height := 10.0
 @export var width := 256
 @export var depth := 2048
@@ -26,11 +25,11 @@ func getHeight(x: float, y: float) -> float:
 	var riverCenter = 90 * sin(y / 200)
 	
 	var noiseBase := noise.get_noise_2d(x, y) * height
-	var ridgeFactor = log(abs((x - riverCenter) / 3)) * 20
+	var ridgeFactor = log(abs((x - riverCenter) / 2)) * 20
 	if (ridgeFactor < -8):
 		ridgeFactor = -8
-	var barrierFactor = abs((x - riverCenter) / 3.5)
-	var sinkConst = -60
+	var barrierFactor = abs((x - riverCenter) / 2)
+	var sinkConst = -70
 	
 	var subtotal = noiseBase + ridgeFactor + barrierFactor + sinkConst
 
