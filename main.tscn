@@ -46,16 +46,16 @@ _surfaces = [{
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_rkvti"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5vsnd"]
-size = Vector3(256, 256, 1)
+size = Vector3(512, 512, 1)
 
-[node name="environmentTest" type="Node3D"]
+[node name="main" type="Node3D"]
 script = ExtResource("1_lquwl")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_pwm38")
 
 [node name="Player" parent="." instance=ExtResource("2_7mycd")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 1, 32, -941.992)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 1, 70, -940)
 
 [node name="environment" type="Node3D" parent="."]
 script = ExtResource("3_272bh")
@@ -66,9 +66,13 @@ mesh = SubResource("ArrayMesh_lquwl")
 skeleton = NodePath("../..")
 script = ExtResource("4_5vw27")
 height = 64.0
-width = 512
+width = 768
 resolution = 64
 noise = SubResource("FastNoiseLite_rkvti")
+
+[node name="river" parent="environment" instance=ExtResource("5_kek77")]
+unique_name_in_owner = true
+transform = Transform3D(1024, 0, 0, 0, 1, 0, 0, 0, 1024, 0, 15, -128)
 
 [node name="checkpoint" type="Area3D" parent="environment"]
 unique_name_in_owner = true
@@ -76,9 +80,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -128)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="environment/checkpoint"]
 shape = SubResource("BoxShape3D_5vsnd")
-
-[node name="river" parent="environment" instance=ExtResource("5_kek77")]
-unique_name_in_owner = true
-transform = Transform3D(1024, 0, 0, 0, 1, 0, 0, 0, 1024, 0, 0, -128)
 
 [connection signal="body_entered" from="environment/checkpoint" to="environment" method="_on_checkpoint_body_entered"]

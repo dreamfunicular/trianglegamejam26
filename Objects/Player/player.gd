@@ -231,8 +231,14 @@ func _physics_process(delta) -> void:
 			if Input.is_action_just_pressed("Flap"):
 				boost_click_2 = boost_click
 				boost_click = BOOST_BUF
-		
-		
+	
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		# If the player collides with terrain (LOSE STATE)
+		if (collision.get_collider().name == "_col2"):
+			print("You lose! You get nothing! Good day sir!")
+		# If the player collides with a fish
+	
 	move_and_slide()
 
 func steer_and_fric(steer_weight: float, fric_weight: float):

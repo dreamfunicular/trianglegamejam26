@@ -23,10 +23,24 @@ func ready() -> void:
 			noise.changed.connect(updateMesh)
 
 func getHeight(x: float, y: float) -> float:
-	return noise.get_noise_2d(x, y) * height + log(abs(x / 2)) * 20 + abs(x/10) - 60
+	var riverCenter = 90 * sin(y / 200)
+	
+	var noiseBase := noise.get_noise_2d(x, y) * height
+	var ridgeFactor = log(abs((x - riverCenter) / 3)) * 20
+	if (ridgeFactor < -8):
+		ridgeFactor = -8
+	var barrierFactor = abs((x - riverCenter) / 3.5)
+	var sinkConst = -60
+	
+	var subtotal = noiseBase + ridgeFactor + barrierFactor + sinkConst
+
+	if (subtotal < 0):
+		return 0
+
+	return subtotal
 
 func getNormal(x: float, y: float) -> Vector3:
-	var epsilon := width / resolution
+	var epsilon : float = float(width) / float(resolution)
 	var normal := Vector3(
 		(getHeight(x + epsilon, y) - getHeight(x - epsilon, y)) / (2.0 * epsilon),
 		1.0,
@@ -70,3 +84,5 @@ func updateMesh() -> void:
 	var arrayMesh := ArrayMesh.new()
 	arrayMesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, planeArrays)
 	mesh = arrayMesh
+	
+	create_trimesh_collision()

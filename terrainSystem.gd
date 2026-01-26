@@ -11,7 +11,7 @@ func _ready() -> void:
 	terrain = %terrain
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass
 
 func _on_checkpoint_body_entered(body: Node3D) -> void:
