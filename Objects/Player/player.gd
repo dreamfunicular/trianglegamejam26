@@ -9,8 +9,6 @@ const ROLL_NORMALIZE_SPEED = 4
 
 const MOUSE_SENSE_FREE = Vector2(0.002, 0.004)
 const TURN_CLAMP_FREE = Vector2(PI/72, PI/36)
-const MOUSE_SENSE_BRAKE = Vector2(0.003, 0.006)
-const TURN_CLAMP_BRAKE = Vector2(PI/36, PI/18)
 const MOUSE_SENSE_WATER = Vector2(0.001, 0.001)
 const TURN_CLAMP_WATER = Vector2(PI/108, PI/108)
 const MOUSE_SENSE_FLOAT = Vector2(0.004, 0.004)
@@ -36,7 +34,6 @@ const SUPER_STATE_NAME : String = "SuperFlap"
 const FLAP_STATE_NAME : String = "Flap"
 const DIVE_STATE_NAME : String = "Dive"
 const FLOAT_STATE_NAME : String = "Float"
-const BRAKE_STATE_NAME : String = "Airbrake"
 
 var is_bird_surfacing : bool = false
 var camera_in_water : bool = false
@@ -58,13 +55,11 @@ var flap_time = -FLAP_COOLDOWN
 @export var boost_blend: Curve
 const BOOST_POWER = 2.0
 const BOOST_BUF = 0.1
-const NON_BOOST_TIME = 0.5
+const NON_BOOST_TIME = 0.3
 const BOOST_DUR = 2.0
 var boost_time = 0.0
 var boost_click = -NON_BOOST_TIME
 var boost_click_2 = -NON_BOOST_TIME
-
-var braking: bool = false
 
 var splash_scene = preload("res://Environment/SplashInstance.tscn")
 
@@ -104,12 +99,8 @@ func turn_camera(rad_x: float, rad_y: float, rolling: bool):
 func update_steer() -> float:
 	match state:
 		PlayerStates.FLY:
-			if braking:
-				mouse_sense_vect = MOUSE_SENSE_BRAKE
-				turn_clamp_vect = TURN_CLAMP_BRAKE
-			else:
-				mouse_sense_vect = MOUSE_SENSE_FREE
-				turn_clamp_vect = TURN_CLAMP_FREE
+			mouse_sense_vect = MOUSE_SENSE_FREE
+			turn_clamp_vect = TURN_CLAMP_FREE
 			return get_speed_lerp()
 			
 		PlayerStates.DIVE:
@@ -200,6 +191,7 @@ func _physics_process(delta) -> void:
 	
 	flap_time = decrement_counter(flap_time, FLAP_COOLDOWN, delta)
 	boost_click = decrement_counter(boost_click, NON_BOOST_TIME, delta)
+	boost_click_2 = decrement_counter(boost_click_2, NON_BOOST_TIME, delta)
 	boost_time = decrement_counter(boost_time, 0, delta)
 	
 	# flying bird only code
@@ -207,31 +199,21 @@ func _physics_process(delta) -> void:
 		PlayerStates.FLY:
 			velocity.y += GRAV * delta
 			
+			var flight_dir = (-pitch_pivot.global_transform.basis.z + Vector3(0, abs(pitch_pivot.transform.basis.y.dot(Vector3.UP)), 0)).normalized()
 			if (boost_time > 0):
 				var percent_boost = boost_blend.sample(1 - boost_time/BOOST_DUR)
-				velocity += percent_boost * (-transform.basis.z + pitch_pivot.transform.basis.y).normalized() * BOOST_POWER
-				#velocity = pow(entry_speed, 1.3) * (-transform.basis.z).normalized()
-				braking = false
+				velocity += percent_boost * flight_dir * BOOST_POWER * delta * 60
 			else:
 				if (flap_time > 0):
 					var percent_flap = flap_blend.sample(1 - flap_time/FLAP_DUR)
-					velocity += percent_flap * (-transform.basis.z + pitch_pivot.transform.basis.y).normalized() * FLAP_POWER
-					braking = false
-				else:
-					if Input.is_action_pressed("Break"):
-						if not braking:
-							braking = true
-							playback.travel(BRAKE_STATE_NAME)
-					else:
-						if braking:
-							braking = false
-							playback.travel(FLIGHT_STATE_NAME)
+					velocity += percent_flap * flight_dir * FLAP_POWER * delta * 60
+					
 				check_flap()
 			var desired_dir = -pitch_pivot.global_transform.basis.z
 			
 			#var speed_weight = clamp(20.0 / max(velocity.length(), 1.0), 0.05, 1.0) * 0.9
 			var speed_weight = pow(ease(get_speed_lerp(), 0.3), 1.4)
-			var turn_weight = (1 - abs(velocity.normalized().dot(desired_dir.normalized()))) / 2
+			var turn_weight = pow((1 - abs(velocity.normalized().dot(desired_dir.normalized()))), 1.3)
 			
 			#var divespeed_coefficient = 1
 			#if (desired_dir.normalized().y > 0):
@@ -242,10 +224,7 @@ func _physics_process(delta) -> void:
 			
 			#velocity = velocity.lerp(Vector3.ZERO, speed_weight * 0.001 * 60 * delta)
 			#velocity = velocity.slerp(desired_dir * velocity.length(), 1.0 * 0.05 * 60 * delta)
-			if braking:
-				steer_and_fric(0.02 * 60 * delta, speed_weight * turn_weight * 0.03 * 60 * delta)
-			else:
-				steer_and_fric(0.045 * 60 * delta, speed_weight * turn_weight * 0.03 * 60 * delta)
+			steer_and_fric(0.045 * 60 * delta, speed_weight * turn_weight * 0.025 * 60 * delta)
 			
 			#var dot_weight = velocity.normalized().dot(desired_dir.normalized())
 			
@@ -267,22 +246,16 @@ func _physics_process(delta) -> void:
 			if pitch < -0.1 or velocity.length() < 10.0 or is_bird_surfacing or velocity.y > 0: # facing up
 				# have a stronger force once the apex of the dive is reached
 				is_bird_surfacing = true
-				velocity.y += pow(-position.y, 1.6) / 150 + 0.5
+				velocity.y += (pow(-position.y, 1.6) / 150 + 0.5) * delta * 60
 				if (velocity.length() > entry_speed): velocity = velocity.lerp(entry_speed * velocity.normalized(), delta * 60 * 0.5)
-				#velocity.y += 20 * delta
-				#clampf(velocity.y, 0, 50)
-				#turn_camera(0.0, (pitch.angle_to(Vector3.UP) ** 2) * 0.15 * delta)
-				#turn_camera(desired_dir.cross(Vector3.UP).dot(velocity) * delta, (desired_dir.y - velocity.normalized().y) * delta)
 			
 			else:
-				velocity.y += pow(-position.y, 1.4) / 150 #* (6-pow(pitch+2, 1.4))
-				#velocity.y += 10 * delta
-				#clampf(velocity.y, 0, 50)
-				#turn_camera(0.0, (pitch.angle_to(Vector3.UP) ** 2) * 0.1 * delta)
-				#turn_camera(0.0, (1.0 - pitch) * 0.15 * delta)
+				velocity.y += (pow(-position.y, 1.2) / 100 + 0.5) * delta * 60
+				print(-position.y)
 			
+			var speed_weight = 1.0 - clamp(velocity.length() / 50, 0.2, 1.0)
 			turn_camera(0.0, (1.0 - pitch) * clamp((-position.y) / 70, 0.5, 1.0) * 0.5 * (0.6 + 0.4 * int(is_bird_surfacing)) * delta, true)
-			steer_and_fric(0.01 * 60 * delta, 0.003 * 60 * delta)
+			steer_and_fric(0.01 * 60 * delta, 0.01 * speed_weight * 60 * delta)
 			
 			if Input.is_action_just_pressed("Flap"):
 				boost_click_2 = boost_click
