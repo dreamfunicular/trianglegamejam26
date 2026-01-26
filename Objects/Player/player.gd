@@ -46,6 +46,15 @@ const FLAP_DUR = 1.75
 const FLAP_COOLDOWN = 0.5
 var flap_time = -FLAP_COOLDOWN
 
+@export var boost_blend: Curve
+const BOOST_POWER = 2.0
+const BOOST_BUF = 0.1
+const NON_BOOST_TIME = 0.5
+const BOOST_DUR = 2.0
+var boost_time = 0.0
+var boost_click = -NON_BOOST_TIME
+var boost_click_2 = -NON_BOOST_TIME
+
 var splash_scene = preload("res://Environment/SplashInstance.tscn")
 
 func _ready():
@@ -106,12 +115,17 @@ func update_state():
 				var _new_spash = splash_scene.instantiate()
 				add_sibling(_new_spash)
 				
+				boost_click = -NON_BOOST_TIME
+				
 				## TODO: Add Sound Effect
 				## TODO: Add Particles
 		
 		PlayerStates.DIVE:
 			if position.y > 0:
 				state = PlayerStates.FLY
+				
+				if (boost_click > 0.0 && boost_click_2 == -NON_BOOST_TIME):
+					boost_time = BOOST_DUR
 
 func get_speed_lerp() -> float:
 	#if velocity.length() > 50: print("maxed out " + str(randi_range(0, 9)))
@@ -119,6 +133,14 @@ func get_speed_lerp() -> float:
 
 func set_wing_amt(wing_amount: float) -> void:
 	model.get_anim_tree().set(flight_blend_path, wing_amount);
+
+func decrement_counter(counter: float, amt: float, delta: float) -> float:
+	var ans = counter
+	if (ans > -amt):
+		ans -= delta
+		if (ans < -amt):
+			ans = -amt
+	return ans
 
 func _physics_process(delta) -> void:
 	# updates all info about where the bird and the camera are
@@ -134,20 +156,25 @@ func _physics_process(delta) -> void:
 	model.rotation.z = -roll
 	rotation.z = -roll * CAMERA_ROLL_PERCENT
 	
-	if (flap_time > -FLAP_COOLDOWN):
-		flap_time -= delta
-		if (flap_time < -FLAP_COOLDOWN):
-			flap_time = -FLAP_COOLDOWN
+	flap_time = decrement_counter(flap_time, FLAP_COOLDOWN, delta)
+	boost_click = decrement_counter(boost_click, NON_BOOST_TIME, delta)
+	boost_time = decrement_counter(boost_time, 0, delta)
 	
 	# flying bird only code
 	match state:
 		PlayerStates.FLY:
 			velocity.y += GRAV * delta
 			
-			if (flap_time > 0):
-				var percent_flap = flap_blend.sample(1 - flap_time/FLAP_DUR)
-				velocity += percent_flap * (-transform.basis.z + pitch_pivot.transform.basis.y).normalized() * FLAP_POWER
-
+			if (boost_time > 0):
+				var percent_boost = boost_blend.sample(1 - boost_time/BOOST_DUR)
+				velocity += percent_boost * (-transform.basis.z + pitch_pivot.transform.basis.y).normalized() * BOOST_POWER
+				#velocity = pow(entry_speed, 1.3) * (-transform.basis.z).normalized()
+			else:
+				if (flap_time > 0):
+					var percent_flap = flap_blend.sample(1 - flap_time/FLAP_DUR)
+					velocity += percent_flap * (-transform.basis.z + pitch_pivot.transform.basis.y).normalized() * FLAP_POWER
+				
+				check_flap()
 			#var desired_dir = -pitch_pivot.global_transform.basis.z
 			
 			#var speed_weight = clamp(20.0 / max(velocity.length(), 1.0), 0.05, 1.0) * 0.9
@@ -165,7 +192,6 @@ func _physics_process(delta) -> void:
 			steer_and_fric(0.05 * 60 * delta, speed_weight * 0.001 * 60 * delta)
 			
 			#var dot_weight = velocity.normalized().dot(desired_dir.normalized())
-			check_flap()
 			
 	# water bird
 		PlayerStates.DIVE:
@@ -201,6 +227,10 @@ func _physics_process(delta) -> void:
 			
 			turn_camera(0.0, (1.0 - pitch) * clamp((-position.y) / 70, 0.5, 1.0) * 0.5 * (0.6 + 0.4 * int(is_bird_surfacing)) * delta)
 			steer_and_fric(0.01 * 60 * delta, 0.003 * 60 * delta)
+			
+			if Input.is_action_just_pressed("Flap"):
+				boost_click_2 = boost_click
+				boost_click = BOOST_BUF
 		
 		
 	move_and_slide()
