@@ -2,16 +2,13 @@ extends Node3D
 
 signal reload
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
+var flock
 
+# Called when the node enters the scene tree for the first time.
+func ready() -> void:
+	print("Help?")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
-
-func on_player_dead() -> void:
-	print("Made it thus far")
-	emit_signal("reload")
+var flockSpeed = 5
+func process(delta: float) -> void:
+	flock.visible = false
