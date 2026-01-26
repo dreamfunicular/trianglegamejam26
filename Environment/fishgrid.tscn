@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://cf255iygpq85j"]
+
+[ext_resource type="Script" uid="uid://clbknx0y7p6b4" path="res://Environment/fishgrid.gd" id="1_oti5y"]
+
+[node name="fishgrid" type="Node3D"]
+script = ExtResource("1_oti5y")
+
+[node name="timer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 27.0
+autostart = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.3711385e-08, 0.99999994, 0, -0.99999994, -4.3711385e-08, 0, 25, 1.208)
+
+[connection signal="timeout" from="timer" to="." method="generateFish"]
