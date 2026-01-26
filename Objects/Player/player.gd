@@ -31,6 +31,7 @@ const FLIGHT_STATE_NAME : String = "Flight"
 const SUPER_STATE_NAME : String = "SuperFlap"
 const FLAP_STATE_NAME : String = "Flap"
 const DIVE_STATE_NAME : String = "Dive"
+const FLOAT_STATE_NAME : String = "Float"
 
 var is_bird_surfacing : bool = false
 var camera_in_water : bool = false
@@ -108,35 +109,45 @@ func update_cam():
 		camera_exit_water()
 
 func update_state():
+	var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
 	match state:
 		PlayerStates.FLY:
 			if position.y < 0:
-				state = PlayerStates.DIVE
-				is_bird_surfacing = false
-				entry_speed = velocity.length() * 0.9
-				
-				var _new_spash = splash_scene.instantiate()
-				add_sibling(_new_spash)
-				
-				boost_click = -NON_BOOST_TIME
-				
-				var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
-				playback.travel(DIVE_STATE_NAME)
-				
-				## TODO: Add Sound Effect
-				## TODO: Add Particles
+				if (flap_time < 0.0 && velocity.y > -10.0 && velocity.length() < 30.0):
+					state = PlayerStates.FLOAT
+					velocity.y = 0
+					playback.travel(FLOAT_STATE_NAME)
+					print("back")
+				else:
+					state = PlayerStates.DIVE
+					is_bird_surfacing = false
+					entry_speed = velocity.length() * 0.9
+					
+					var _new_spash = splash_scene.instantiate()
+					add_sibling(_new_spash)
+					
+					boost_click = -NON_BOOST_TIME
+					
+					playback.travel(DIVE_STATE_NAME)
+					
+					## TODO: Add Sound Effect
+					## TODO: Add Particles
 		
 		PlayerStates.DIVE:
 			if position.y > 0:
 				state = PlayerStates.FLY
-				
-				var playback = model.get_anim_tree().get(air_state_playback_path) as AnimationNodeStateMachinePlayback
 				
 				if (boost_click > 0.0 && boost_click_2 == -NON_BOOST_TIME):
 					boost_time = BOOST_DUR
 					playback.travel(SUPER_STATE_NAME)
 				else:
 					playback.travel(FLIGHT_STATE_NAME)
+		
+		PlayerStates.FLOAT:
+			if flap_time == FLAP_DUR:
+				print("hello")
+				state = PlayerStates.FLY
+				playback.travel(FLIGHT_STATE_NAME)
 
 func get_speed_lerp() -> float:
 	#if velocity.length() > 50: print("maxed out " + str(randi_range(0, 9)))
@@ -243,6 +254,10 @@ func _physics_process(delta) -> void:
 				boost_click_2 = boost_click
 				boost_click = BOOST_BUF
 		
+		PlayerStates.FLOAT:
+			velocity = velocity.lerp(Vector3.ZERO, 60 * 0.05 * delta)
+			
+			check_flap()
 		
 	move_and_slide()
 
