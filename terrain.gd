@@ -4,7 +4,7 @@ extends MeshInstance3D
 #const size := 256.0
 @export var height := 10.0
 @export var width := 256
-@export var depth := 1536
+@export var depth := 2048
 
 @export_range(4, 256, 4) var resolution := 32:
 	set(new_resolution):
@@ -23,7 +23,7 @@ func ready() -> void:
 			noise.changed.connect(updateMesh)
 
 func getHeight(x: float, y: float) -> float:
-	return noise.get_noise_2d(x, y) * height + log(abs(x / 2)) * 20 - 50
+	return noise.get_noise_2d(x, y) * height + log(abs(x / 2)) * 20 + abs(x/10) - 60
 
 func getNormal(x: float, y: float) -> Vector3:
 	var epsilon := width / resolution
@@ -34,8 +34,10 @@ func getNormal(x: float, y: float) -> Vector3:
 	)
 	return normal.normalized()
 
+
+var minZ = -128
 func shift() -> void:
-	position.z += 128
+	minZ += 512
 	updateMesh()
 
 func updateMesh() -> void:
@@ -43,6 +45,7 @@ func updateMesh() -> void:
 	plane.subdivide_depth = resolution 
 	plane.subdivide_width = resolution * (depth / width)
 	plane.size = Vector2(width, depth)
+	plane.center_offset = Vector3(0, 0, minZ)
 	
 	var planeArrays := plane.get_mesh_arrays()
 	var vertexArray : PackedVector3Array = planeArrays[ArrayMesh.ARRAY_VERTEX]

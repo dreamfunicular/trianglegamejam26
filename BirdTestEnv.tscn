@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://eawuk4olyybv" path="res://Environment/WaterDust.tscn" id="1_boav5"]
 [ext_resource type="PackedScene" uid="uid://soq3fq6874f5" path="res://Objects/Player/Player.tscn" id="1_fmpl0"]
 [ext_resource type="Texture2D" uid="uid://c5mp8fqgsh6r2" path="res://icon.svg" id="2_viqye"]
-[ext_resource type="PackedScene" uid="uid://dpmwr7b8lp1ce" path="res://testing/water_surface.tscn" id="3_boav5"]
+[ext_resource type="PackedScene" path="res://testing/water_surface.tscn" id="3_boav5"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0r40m"]
 sky_top_color = Color(0.3372549, 0.45490196, 1, 1)
@@ -50,42 +50,52 @@ use_collision = true
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -287.28146, 45.80746, -65.53262)
+visible = false
 size = Vector3(267.44757, 1, 568.122)
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -234.00137, -96.57291, -65.53262)
+visible = false
 size = Vector3(267.44757, 1, 568.122)
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.116912365, 0)
+visible = false
 radius = 2.413805
 
 [node name="CSGSphere3D2" type="CSGSphere3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.605373, 0.116912365, -8.843773)
+visible = false
 radius = 4.7563915
 
 [node name="CSGSphere3D3" type="CSGSphere3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.108479, 0.116912365, -36.85562)
+visible = false
 radius = 4.7563915
 
 [node name="CSGSphere3D4" type="CSGSphere3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.635899, 0.116912365, -16.124382)
+visible = false
 radius = 4.7563915
 
 [node name="CSGSphere3D5" type="CSGSphere3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25255203, 0.116912365, -24.021996)
+visible = false
 radius = 4.7563915
 
 [node name="CSGSphere3D6" type="CSGSphere3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.38451, 0.116912365, 3.1260529)
+visible = false
 radius = 4.7563915
 
 [node name="CSGSphere3D7" type="CSGSphere3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.138662, 0.116912365, 18.921276)
+visible = false
 radius = 4.7563915
 
 [node name="CSGSphere3D8" type="CSGSphere3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.443924, 0.116912365, -31.549408)
+visible = false
 radius = 3.6457748
 
 [node name="WaterContainer" parent="Ground" instance=ExtResource("3_boav5")]

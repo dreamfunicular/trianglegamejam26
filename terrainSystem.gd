@@ -17,8 +17,7 @@ func _process(delta: float) -> void:
 func _on_checkpoint_body_entered(body: Node3D) -> void:
 	if (body.name != "Player"):
 		return
-		
 	print("Entered!")
-	checkpoint.position = checkpoint.position + Vector3(0, 0, 128)
-	river.position = river.position + Vector3(0, 0, 128)
+	checkpoint.position = checkpoint.position + Vector3(0, 0, 512    )
+	river.position = river.position + Vector3(0, 0, 512)
 	terrain.shift()

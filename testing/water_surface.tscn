@@ -1,6 +1,6 @@
-[gd_scene load_steps=18 format=3 uid="uid://dpmwr7b8lp1ce"]
+[gd_scene load_steps=18 format=3 uid="uid://c0dkl41ynkhav"]
 
-[ext_resource type="Shader" uid="uid://cpbegb37y0udh" path="res://testing/water.gdshader" id="1_bu3dp"]
+[ext_resource type="Shader" path="res://testing/water.gdshader" id="1_bu3dp"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_0tou4"]
 
