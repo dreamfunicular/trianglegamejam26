@@ -1,9 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://cakultn8jtwub"]
+[gd_scene load_steps=4 format=3 uid="uid://cakultn8jtwub"]
 
+[ext_resource type="Script" uid="uid://cg5el71x2pqxu" path="res://GUI/gui.gd" id="1_1x7qj"]
 [ext_resource type="PackedScene" uid="uid://ccgdkd8i37poi" path="res://GUI/Score/Score.tscn" id="1_17ifr"]
 [ext_resource type="PackedScene" uid="uid://cd36jgcwptrl6" path="res://GUI/Stamina Bar/Stamina.tscn" id="2_1x7qj"]
 
 [node name="Gui" type="CanvasLayer"]
+script = ExtResource("1_1x7qj")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15

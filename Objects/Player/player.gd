@@ -22,7 +22,7 @@ var turn_clamp_vect = TURN_CLAMP_FREE
 
 # Camera settings (COME BACK TO THESE FOR SPEED STUFF)
 const CAMERA_DISTANCE = 4.0
-const CAMERA_HEIGHT = 1.6
+const CAMERA_HEIGHT = 1.2
 
 var roll : float = 0.0
 

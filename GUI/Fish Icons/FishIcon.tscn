@@ -1,0 +1,39 @@
+[gd_scene load_steps=9 format=3 uid="uid://b4ns0yvdc0djm"]
+
+[ext_resource type="Texture2D" uid="uid://cfg06lub47sil" path="res://GUI/Fish Icons/Fish Icon Sprites/icon_anchovy.png" id="1_41sb3"]
+[ext_resource type="Texture2D" uid="uid://ckhmrhxairxbi" path="res://GUI/Fish Icons/Fish Icon Sprites/icon_atlCod.png" id="2_kpdoj"]
+[ext_resource type="Texture2D" uid="uid://bydclunuvd4sx" path="res://GUI/Fish Icons/Fish Icon Sprites/icon_clownfish.png" id="3_sm7yi"]
+[ext_resource type="Texture2D" uid="uid://ft5to8myd5ij" path="res://GUI/Fish Icons/Fish Icon Sprites/icon_haddock.png" id="4_26yk5"]
+[ext_resource type="Texture2D" uid="uid://djdytkr4em25s" path="res://GUI/Fish Icons/Fish Icon Sprites/icon_sardine.png" id="5_5qshf"]
+[ext_resource type="Texture2D" uid="uid://bvmd2bdacntuw" path="res://GUI/Fish Icons/Fish Icon Sprites/icon_squid.png" id="6_ok4xs"]
+[ext_resource type="Script" uid="uid://b3q5d0t7fmf0j" path="res://GUI/Fish Icons/fish_icon.gd" id="7_snyym"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0wcmx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_41sb3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_kpdoj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_sm7yi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_26yk5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_5qshf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_ok4xs")
+}],
+"loop": true,
+"name": &"default",
+"speed": 0.0
+}]
+
+[node name="FishIcon" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_0wcmx")
+script = ExtResource("7_snyym")
