@@ -10,8 +10,8 @@
 [ext_resource type="AudioStream" uid="uid://elw4fe3ltwiq" path="res://audio/SFX/wing_flapping/big-flap--05.ogg" id="8_q10m3"]
 
 [sub_resource type="Curve" id="Curve_cac6a"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.24456522, 1), 0.0, 0.0, 0, 0, Vector2(0.41847825, 0.22471917), -1.698235, -1.698235, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 4
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.24456522, 1), 0.0, 0.0, 0, 0, Vector2(0.4076087, 0), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="Curve" id="Curve_y01d7"]
 _data = [Vector2(0, 0), 0.0, 20.67415, 0, 0, Vector2(0.09782609, 1), 0.0, 0.0, 0, 0, Vector2(0.4076087, 0.3370787), -1.8193254, -1.8193254, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -22,6 +22,7 @@ point_count = 4
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_xhfnw")
 flight_blend_path = "parameters/StateMachine/Flight/blend_position"
+dive_blend_path = "parameters/StateMachine/Dive/blend_position"
 air_state_playback_path = "parameters/StateMachine/playback"
 flap_blend = SubResource("Curve_cac6a")
 boost_blend = SubResource("Curve_y01d7")
