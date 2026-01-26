@@ -39,6 +39,8 @@ var is_bird_surfacing : bool = false
 var camera_in_water : bool = false
 var entry_speed : float = 0.0
 
+signal dead
+
 enum PlayerStates {
 	FLY,
 	DIVE,
@@ -266,11 +268,7 @@ func _physics_process(delta) -> void:
 				boost_click = BOOST_BUF
 	
 	for i in get_slide_collision_count():
-		var collision = get_slide_collision(i)
-		# If the player collides with terrain (LOSE STATE)
-		if (collision.get_collider().name == "_col2"):
-			print("You lose! You get nothing! Good day sir!")
-		# If the player collides with a fish
+		emit_signal("dead")
 		
 		if PlayerStates.FLOAT:
 			velocity = velocity.lerp(Vector3.ZERO, 60 * 0.05 * delta)
@@ -278,6 +276,9 @@ func _physics_process(delta) -> void:
 			check_flap()
 		
 	move_and_slide()
+	
+	if (abs(position.x) > 768):
+		emit_signal("dead")
 
 func steer_and_fric(steer_weight: float, fric_weight: float):
 	var desired_dir = -pitch_pivot.global_transform.basis.z
