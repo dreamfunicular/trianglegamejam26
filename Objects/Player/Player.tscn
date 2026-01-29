@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://soq3fq6874f5"]
+[gd_scene load_steps=16 format=3 uid="uid://soq3fq6874f5"]
 
 [ext_resource type="Script" uid="uid://biqy6yp0qk8r4" path="res://Objects/Player/player.gd" id="1_xhfnw"]
 [ext_resource type="PackedScene" uid="uid://bbs4qg2o8ouf0" path="res://Objects/Player/Gannet/GannetModel.tscn" id="2_oansn"]
 [ext_resource type="PackedScene" uid="uid://dd68nbxyrey6x" path="res://testing/underwater_effect.tscn" id="3_cac6a"]
+[ext_resource type="Shader" uid="uid://cv0lkj0nfe1qw" path="res://Objects/Player/speedlines.gdshader" id="4_ebgc0"]
 [ext_resource type="AudioStream" uid="uid://ccl872p5pftmv" path="res://audio/SFX/wing_flapping/big-flap--01.ogg" id="4_y01d7"]
 [ext_resource type="AudioStream" uid="uid://dtpwp8202ba3d" path="res://audio/SFX/wing_flapping/big-flap--02.ogg" id="5_7t0p5"]
 [ext_resource type="AudioStream" uid="uid://ba8cqx4iwfxlt" path="res://audio/SFX/wing_flapping/big-flap--03.ogg" id="6_ebgc0"]
@@ -22,6 +23,17 @@ point_count = 4
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_7t0p5"]
 radius = 1.8347151
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1ggq4"]
+shader = ExtResource("4_ebgc0")
+shader_parameter/Speed = 0.5
+shader_parameter/LineLength = 2.0
+shader_parameter/LineColor = Color(0, 0, 0, 1)
+shader_parameter/Softness = 0.066000003135
+shader_parameter/Weirdness = 0.1
+shader_parameter/Radius = 1.4480000687799999
+shader_parameter/Freq = 10.0
+shader_parameter/FrameRate = 15.90000014752188
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_xhfnw")
@@ -68,6 +80,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.0176677)
 shape = SubResource("SphereShape3D_7t0p5")
 
 [node name="UnderwaterEffect" parent="." instance=ExtResource("3_cac6a")]
+
+[node name="ColorRect" type="ColorRect" parent="UnderwaterEffect"]
+material = SubResource("ShaderMaterial_1ggq4")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="BirdSounds" type="Node3D" parent="."]
 

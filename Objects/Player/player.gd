@@ -257,6 +257,10 @@ func _physics_process(delta) -> void:
 			
 			steer_and_fric(0.045 * 60 * delta, speed_weight * turn_weight * 0.025 * 60 * delta)
 			
+			var val = 2
+			val -= clamp(velocity.length() / 250, 0.0, 0.5)
+			$UnderwaterEffect/ColorRect.material.set_shader_parameter("Radius", val) 
+			
 	# water bird
 		PlayerStates.DIVE:
 			model.get_anim_tree().set(dive_blend_path, clamp(position.y/-10.0, 0.0, 1.0));
