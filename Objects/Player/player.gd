@@ -25,6 +25,7 @@ const CAMERA_DISTANCE = 4.0
 const CAMERA_HEIGHT = 1.2
 
 var roll : float = 0.0
+var barrel_roll: float = 0.0
 
 @export var flight_blend_path: String
 @export var dive_blend_path: String
@@ -88,15 +89,15 @@ func _input(event) -> void:
 		var float_state = state != PlayerStates.FLOAT
 		turn_camera(clamp(-event.relative.x * mouse_sense, -turn_clamp, turn_clamp),
 			clamp(-event.relative.y * mouse_sense, -turn_clamp, turn_clamp), float_state)
-		if float_state:
-			model.rotation.x = 0.0
-		else:
-			model.rotation.x = -pitch_pivot.rotation.x
 
 func turn_camera(rad_x: float, rad_y: float, rolling: bool):
 	rotate_y(rad_x)
 	pitch_pivot.rotate_x(rad_y)
-	if (rolling): roll += -rad_x * ROLL_SENSE
+	if (rolling && abs(roll) < PI/4): roll = clamp(roll - (rad_x * ROLL_SENSE), -PI/4, PI/4)
+	if rolling:
+		model.rotation.x = 0.0
+	else:
+		model.rotation.x = -pitch_pivot.rotation.x
 
 # the vectors it sets store the high and low values of mouse sense and max steer
 # these values are set based on the player's state
@@ -217,9 +218,10 @@ func _physics_process(delta) -> void:
 	var wing_amt_speed = clamp(1 - (velocity.length() - 40)/50, 0.0, 1.0) * 0.3 + 0.7
 	set_wing_amt(wing_amt_height * wing_amt_dive * wing_amt_speed)
 	#
-	roll = clamp(lerp(roll, 0.0, 1.0 - exp(-ROLL_NORMALIZE_SPEED * delta)), -PI/4, PI/4)
-	model.rotation.z = -roll
-	rotation.z = -roll * CAMERA_ROLL_PERCENT
+	roll = lerp(roll, 0.0, 1.0 - exp(-ROLL_NORMALIZE_SPEED * delta))
+	barrel_roll = lerp(barrel_roll, 0.0, 1.0 - exp(-ROLL_NORMALIZE_SPEED * delta))
+	model.rotation.z = -roll - barrel_roll
+	rotation.z = (-roll * CAMERA_ROLL_PERCENT)# - barrel_roll
 	
 	flap_time = decrement_counter(flap_time, FLAP_COOLDOWN, delta)
 	boost_click = decrement_counter(boost_click, NON_BOOST_TIME, delta)
@@ -245,6 +247,13 @@ func _physics_process(delta) -> void:
 			
 			var speed_weight = pow(ease(get_speed_lerp(), 0.3), 1.4)
 			var turn_weight = pow((1 - abs(velocity.normalized().dot(desired_dir.normalized()))), 1.3)
+			
+			#var pitch = pitch_pivot.rotation.x
+			#if abs(pitch) > PI * 0.7:
+				#barrel_roll -= PI
+				#var temp = roll
+				#turn_camera(PI, 2 * sign(pitch) * (PI/2 - abs(pitch)), true)
+				#roll = temp
 			
 			steer_and_fric(0.045 * 60 * delta, speed_weight * turn_weight * 0.025 * 60 * delta)
 			
